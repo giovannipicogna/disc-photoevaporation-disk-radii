@@ -1,0 +1,334 @@
+"""
+Publication-ready script for surface density evolution comparison.
+
+This script creates a two-panel figure comparing disc surface density evolution
+between different photoevaporation prescriptions, showing sigma vs radius at
+various percentages of disc lifetime.
+
+Author: Giovanni Picogna
+Date: October 2025 - Optimized for publication
+"""
+
+# ============================================================================
+# IMPORTS AND DEPENDENCIES
+# ============================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+import glob
+import json
+
+# Try to use science plots style if available
+try:
+    import scienceplots
+    plt.style.use('science')
+    print("Using scienceplots style for publication quality")
+except ImportError:
+    print("scienceplots not available, using default matplotlib style")
+
+# Try seaborn for color palettes
+try:
+    import seaborn as sns
+    sns.set_palette("viridis")
+except ImportError:
+    print("seaborn not available, using matplotlib defaults")
+
+# ============================================================================
+# CONSTANTS AND CONFIGURATION
+# ============================================================================
+AU = 1.496e13  # cm to AU conversion
+OUTPUT_TIMESTEP_YR = 10000  # Each output represents 10,000 years
+
+# Configure matplotlib for single-column A4 publication
+plt.rcParams['text.usetex'] = False  # Disable LaTeX to avoid rendering issues
+
+# Set font sizes optimized for single-column A4 layout
+plt.rc('font', size=9.)
+plt.rc('xtick', labelsize=8.)
+plt.rc('ytick', labelsize=8.)
+plt.rc('axes', labelsize=9.)
+plt.rc('legend', fontsize=8.)
+plt.rcParams["errorbar.capsize"] = 2
+
+
+# ============================================================================
+# DATA READING FUNCTIONS
+# ============================================================================
+
+
+def read_grid_file(grid_path):
+    """Read the grid.dat file and return radius in AU."""
+    try:
+        grid_data = np.loadtxt(grid_path)
+        radius_cm = grid_data  # Assuming grid.dat contains radius in cm
+        radius_au = radius_cm / AU
+        return radius_au
+    except Exception as e:
+        print(f"Error reading grid file: {e}")
+        return None
+
+def read_sigma_file(sigma_path):
+    """Read a sigma*.dat file and return surface density."""
+    try:
+        sigma_data = np.loadtxt(sigma_path)
+        return sigma_data
+    except Exception as e:
+        print(f"Error reading {sigma_path}: {e}")
+        return None
+
+
+def get_sigma_files(run_path):
+    """Get all sigma*.dat files and sort them numerically."""
+    sigma_pattern = os.path.join(run_path, "sigma*.dat")
+    sigma_files = glob.glob(sigma_pattern)
+    
+    # Extract numbers from filenames for proper sorting
+    def extract_number(filename):
+        base = os.path.basename(filename)
+        # Remove 'sigma' and '.dat' to get the number
+        number_str = base.replace('sigma', '').replace('.dat', '')
+        try:
+            return int(number_str)
+        except ValueError:
+            return 0
+    
+    sigma_files.sort(key=extract_number)
+    return sigma_files
+
+
+def read_critical_radius(run_path):
+    """Read the critical radius (r1) from parameters.dat file."""
+    params_path = os.path.join(run_path, "parameters.dat")
+    
+    if not os.path.exists(params_path):
+        print(f"Warning: parameters.dat not found in {run_path}")
+        return None
+    
+    try:
+        with open(params_path, 'r') as f:
+            params = json.load(f)
+        
+        if 'r1' in params:
+            r1_au = float(params['r1'])
+            print(f"Found critical radius r1 = {r1_au:.1f} AU")
+            return r1_au
+        else:
+            print("Warning: r1 parameter not found in parameters.dat")
+            return None
+        
+    except json.JSONDecodeError as e:
+        print(f"Error parsing JSON in parameters.dat: {e}")
+        return None
+    except Exception as e:
+        print(f"Error reading parameters.dat: {e}")
+        return None
+
+
+def main():
+    """Main function to create surface density evolution comparison figure."""
+    # ========================================================================
+    # DATA PATHS AND CONFIGURATION
+    # ========================================================================
+    # Path to the run directories
+    base_path = ("/e/ocean1/users/picogna/"
+                 "Photoevaporation-OuterRadius-Project/")
+    
+    # Define all run configurations (ordered as desired: 5 AU, 20 AU, 80 AU)
+    run_configs = {
+        '5au': {
+            'new': base_path + "test_single_planet_new/run0",
+            'old': base_path + "test_single_planet_old/run0",
+            'label': '5 AU'
+        },
+        '20au': {
+            'new': base_path + "test_single_planet_new_20au/run0",
+            'old': base_path + "test_single_planet_old_20au/run0",
+            'label': '20 AU'
+        },
+        '80au': {
+            'new': base_path + "test_single_planet_new_80au/run0",
+            'old': base_path + "test_single_planet_old_80au/run0",
+            'label': '80 AU'
+        }
+    }
+    
+    # ========================================================================
+    # FIGURE CREATION AND FORMATTING
+    # ========================================================================
+    # Create figure optimized for single-column A4 layout (3.5" wide, 3 rows)
+    # Share x-axis within columns and y-axis within rows
+    fig, axes = plt.subplots(3, 2, figsize=(3.46457, 5.),
+                             sharex='col', sharey='row')
+    fig.subplots_adjust(left=0.12, bottom=0.12, right=0.88, top=0.80,
+                        wspace=0.15, hspace=0.30)
+    
+    # Define percentages for all plots
+    percentages = np.array([0, 20, 40, 60, 80, 90, 92, 94, 96, 98, 100])
+    
+    # Color map for different times (using modern matplotlib API)
+    try:
+        colors = plt.colormaps['plasma'](np.linspace(0, 1, len(percentages)))
+    except (KeyError, AttributeError):
+        # Fallback for older matplotlib versions
+        import matplotlib.cm as cm
+        colors = cm.get_cmap('plasma')(np.linspace(0, 1, len(percentages)))
+    
+    # ========================================================================
+    # PROCESS ALL CONFIGURATIONS
+    # ========================================================================
+    row_idx = 0
+    for config_key, config_data in run_configs.items():
+        print(f"\n=== Processing {config_data['label']} configuration ===")
+        
+        # Process both new and old prescriptions for this configuration
+        for col_idx, prescription in enumerate(['new', 'old']):
+            run_path = config_data[prescription]
+            ax = axes[row_idx, col_idx]
+            
+            print(f"Analyzing {prescription} run: {run_path}")
+            
+            # Check if directory exists
+            if not os.path.exists(run_path):
+                print(f"Error: Directory {run_path} does not exist!")
+                ax.text(0.5, 0.5, f"Data not found\n{config_data['label']} {prescription}",
+                        transform=ax.transAxes, ha='center', va='center',
+                        fontsize=8, style='italic')
+                continue
+            
+            # Read grid file
+            grid_path = os.path.join(run_path, "grid.dat")
+            radius_au = read_grid_file(grid_path)
+            
+            if radius_au is None:
+                print(f"Failed to read grid file for {prescription}!")
+                continue
+            
+            print(f"Read grid with {len(radius_au)} radial points")
+            print(f"Radius range: {radius_au.min():.1f} - {radius_au.max():.1f} AU")
+            
+            # Read critical radius from parameters.dat
+            critical_radius_au = read_critical_radius(run_path)
+            
+            # Get all sigma files
+            sigma_files = get_sigma_files(run_path)
+            
+            if not sigma_files:
+                print(f"No sigma*.dat files found for {prescription}!")
+                continue
+            
+            print(f"Found {len(sigma_files)} sigma files")
+            
+            # Determine disk lifetime (number of outputs)
+            total_outputs = len(sigma_files) - 1
+            
+            # Calculate disc lifetime in Myr
+            disc_lifetime_myr = (total_outputs * OUTPUT_TIMESTEP_YR) / 1e6
+            print(f"{prescription.capitalize()} disc lifetime: {disc_lifetime_myr:.2f} Myr")
+            
+            # Select files at key percentages of disk lifetime
+            selected_indices = []
+            for percent in percentages:
+                index = int((percent / 100.0) * (total_outputs - 1))
+                selected_indices.append(index)
+            
+            print(f"Selected output indices: {selected_indices}")
+            
+            # Plot surface density evolution
+            for i, (percent, index) in enumerate(zip(percentages, selected_indices)):
+                sigma_file = sigma_files[index]
+                sigma = read_sigma_file(sigma_file)
+                
+                if sigma is None:
+                    print(f"Failed to read {sigma_file}")
+                    continue
+                
+                if len(sigma) != len(radius_au):
+                    print(f"Warning: sigma file {sigma_file} has {len(sigma)} points, "
+                          f"but grid has {len(radius_au)} points")
+                    # Use minimum length to avoid errors
+                    min_len = min(len(sigma), len(radius_au))
+                    sigma = sigma[:min_len]
+                    r_plot = radius_au[:min_len]
+                else:
+                    r_plot = radius_au
+                
+                # Plot only non-zero values (in log scale)
+                mask = sigma > 0
+                if np.any(mask):
+                    # Only add label for the first subplot to avoid legend duplication
+                    label = f'{percent}%' if (row_idx == 0 and col_idx == 0) else None
+                    ax.loglog(r_plot[mask], sigma[mask],
+                             color=colors[i], linewidth=1.5, label=label)
+                    print(f"Plotted {percent}% of lifetime: {np.sum(mask)} points")
+                else:
+                    print(f"Warning: No positive sigma values for {percent}% of lifetime")
+            
+            # Add critical radius vertical line if available
+            if critical_radius_au is not None:
+                critical_label = 'Critical radius' if (row_idx == 0 and col_idx == 0) else None
+                ax.axvline(critical_radius_au, color='gray', linestyle='--',
+                          linewidth=1.2, alpha=0.8, label=critical_label)
+                print(f"Added critical radius line at {critical_radius_au:.1f} AU")
+            
+            # Format subplot - only add labels and ticks where needed
+            if row_idx == 2:  # Bottom row only
+                ax.set_xlabel('Radius [AU]', fontsize=9)
+            else:
+                # Remove x-tick labels for top and middle rows
+                ax.tick_params(axis='x', labelbottom=False)
+                
+            if col_idx == 0:  # Left column only
+                ax.set_ylabel(r'$\Sigma$ [g/cm$^2$]', fontsize=9)
+            else:
+                # Remove y-tick labels for right column
+                ax.tick_params(axis='y', labelleft=False)
+            
+            # Set title showing prescription and lifetime
+            prescription_name = 'New' if prescription == 'new' else 'Old'
+            ax.set_title(f'{prescription_name} ({disc_lifetime_myr:.2f} Myr)', fontsize=9)
+            
+            # Add row labels on the right side
+            if col_idx == 1:
+                ax.text(1.08, 0.5, config_data['label'],
+                        transform=ax.transAxes, fontsize=10, fontweight='bold',
+                        va='center', ha='left', rotation=90)
+            
+            ax.grid(True, alpha=0.3)
+            ax.set_xlim(1, 1000)  # Typical disk radius range
+            ax.set_ylim(1e-7, 1e3)
+            
+            # Add subplot labels (a, b, c, d, e, f)
+            subplot_labels = ['a)', 'b)', 'c)', 'd)', 'e)', 'f)']
+            label_idx = row_idx * 2 + col_idx
+            ax.text(0.95, 0.95, subplot_labels[label_idx], transform=ax.transAxes,
+                    fontsize=11, fontweight='bold', va='top', ha='right')
+        
+        row_idx += 1
+    
+    # ========================================================================
+    # SHARED LEGEND
+    # ========================================================================
+    # Create shared legend for all subplots using the first subplot
+    handles, labels = axes[0, 0].get_legend_handles_labels()
+    
+    # Position legend at the top of the figure, above the first row
+    fig.legend(handles, labels, bbox_to_anchor=(0.5, 0.98), loc='upper center',
+               fontsize=7, frameon=True, fancybox=True, shadow=False,
+               ncol=4)  # Arrange in 4 columns (3 rows of items)
+    
+    # ========================================================================
+    # FIGURE FINALIZATION
+    # ========================================================================
+    # Save the figure with publication quality
+    output_file = 'surface_density_evolution_3x2_singlecol.png'
+    fig.savefig(output_file, format='png', dpi=300, bbox_inches='tight',
+                facecolor='white', edgecolor='none')
+    print(f"Figure saved as: {output_file}")
+    fig_w, fig_h = fig.get_figwidth(), fig.get_figheight()
+    print(f"Figure dimensions: {fig_w:.1f}\" x {fig_h:.1f}\"")
+    print("Optimized for single-column A4 scientific publication")
+    print("Grid layout: 3 rows × 2 columns")
+
+
+if __name__ == "__main__":
+    main()
