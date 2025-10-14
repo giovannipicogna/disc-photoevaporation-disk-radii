@@ -1,7 +1,0 @@
-
-Name: Graphite2
-Description: Font rendering engine for Complex Scripts
-Version: 3.0.1
-Libs: -L/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/6f58972e3168fc1937d8c193aac334e2_/lib -lgraphite2
-Cflags: -I/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/6f58972e3168fc1937d8c193aac334e2_/include
-

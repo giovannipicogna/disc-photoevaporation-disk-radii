@@ -1,5 +1,0 @@
-#!/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/0e37d6ce77ff237ff2871454a4f1678f_/bin/python3.10
-
-from idlelib.pyshell import main
-if __name__ == '__main__':
-    main()
