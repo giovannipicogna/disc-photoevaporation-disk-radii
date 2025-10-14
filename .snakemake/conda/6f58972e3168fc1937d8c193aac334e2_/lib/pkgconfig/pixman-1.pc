@@ -1,0 +1,10 @@
+prefix=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/6f58972e3168fc1937d8c193aac334e2_
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: Pixman
+Description: The pixman library (version 1)
+Version: 0.46.4
+Libs: -L${libdir} -lpixman-1
+Libs.private: -lm
+Cflags: -I${includedir}/pixman-1

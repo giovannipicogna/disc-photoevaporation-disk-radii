@@ -1,0 +1,183 @@
+{
+    "cache": {
+        "main": {
+            "sandbox": null,
+            "zenodo": null
+        }
+    },
+    "cache_on_zenodo": true,
+    "dag": {
+        "engine": "sfdp",
+        "graph_attr": {
+            "ranksep": "1",
+            "nodesep": "0.65"
+        },
+        "group_by_type": false,
+        "node_attr": {
+            "shape": "box",
+            "penwidth": "2",
+            "width": "1"
+        },
+        "render": false,
+        "ignore_files": []
+    },
+    "datasets": {},
+    "dependencies": {
+        "src/tex/ms.tex": [
+            "src/tex/figures/Fig1.png",
+            "src/tex/figures/Fig2.png",
+            "src/tex/figures/Fig3.png",
+            "src/tex/figures/Fig4.png",
+            "src/tex/figures/Fig5.png"
+        ]
+    },
+    "ms_name": "ms",
+    "optimize_caching": false,
+    "overleaf": {
+        "gh_actions_sync": true,
+        "id": null,
+        "pull": [
+            "src/tex/ms.tex",
+            "src/tex/bib.bib"
+        ],
+        "push": [
+            "src/tex/figures",
+            "src/tex/output"
+        ]
+    },
+    "require_inputs": true,
+    "run_cache_rules_on_ci": false,
+    "scripts": {
+        "py": "python {script}"
+    },
+    "stamp": {
+        "angle": -20.0,
+        "enabled": true,
+        "size": 0.75,
+        "url": {
+            "enabled": true,
+            "maxlen": 40
+        },
+        "xpos": 0.5,
+        "ypos": 0.5,
+        "text": "{\\faGithub}/GiovanniPicogna/disc-photoevaporati...",
+        "version": "dev"
+    },
+    "synctex": true,
+    "tectonic_args": [],
+    "verbose": false,
+    "version": "0.4.4.dev183+g297242b",
+    "user_args": [],
+    "margin_icons": {
+        "colors": {
+            "github": "0.12,0.47,0.71",
+            "sandbox": "0.80,0.14,0.19",
+            "cache": "0.12,0.47,0.71",
+            "dataset": "0.12,0.47,0.71"
+        },
+        "monochrome": false,
+        "horizontal_offset": ""
+    },
+    "preprocess_arxiv_script": null,
+    "user_abspath": "/Users/giovanni/Papers/disc-photoevaporation-disk-radii",
+    "workflow_abspath": "/Users/giovanni/anaconda3/envs/snakemake/lib/python3.10/site-packages/showyourwork/workflow",
+    "tex_files_in": [
+        "/Users/giovanni/anaconda3/envs/snakemake/lib/python3.10/site-packages/showyourwork/workflow/resources/tex/xstring.sty",
+        "/Users/giovanni/anaconda3/envs/snakemake/lib/python3.10/site-packages/showyourwork/workflow/resources/tex/showyourwork-logo.pdf",
+        "/Users/giovanni/anaconda3/envs/snakemake/lib/python3.10/site-packages/showyourwork/workflow/resources/tex/showyourwork.otf",
+        "/Users/giovanni/anaconda3/envs/snakemake/lib/python3.10/site-packages/showyourwork/workflow/resources/tex/xstring.tex",
+        "/Users/giovanni/anaconda3/envs/snakemake/lib/python3.10/site-packages/showyourwork/workflow/resources/tex/showyourwork-stamp.pdf",
+        "/Users/giovanni/anaconda3/envs/snakemake/lib/python3.10/site-packages/showyourwork/workflow/resources/tex/listofitems.tex",
+        "/Users/giovanni/anaconda3/envs/snakemake/lib/python3.10/site-packages/showyourwork/workflow/resources/tex/lineno.sty"
+    ],
+    "ms_tex": "src/tex/ms.tex",
+    "ms_pdf": "ms.pdf",
+    "config_json": ".showyourwork/config.json",
+    "stylesheet": "showyourwork.tex",
+    "stylesheet_meta_file": "showyourwork-metadata.tex",
+    "script_extensions": [
+        "py"
+    ],
+    "tree": {
+        "figures": {
+            "fig:pop_synth_corner_plots": {
+                "script": "src/scripts/fig1.py",
+                "graphics": [
+                    "src/tex/figures/Fig1.png"
+                ],
+                "datasets": [],
+                "dependencies": [],
+                "command": "python src/scripts/fig1.py",
+                "static": false
+            },
+            "fig:mass_loss_rate_cumulative": {
+                "script": "src/scripts/fig2.py",
+                "graphics": [
+                    "src/tex/figures/Fig2.png"
+                ],
+                "datasets": [],
+                "dependencies": [],
+                "command": "python src/scripts/fig2.py",
+                "static": false
+            },
+            "fig:photoevaporation_scenarios": {
+                "script": "src/scripts/fig3.py",
+                "graphics": [
+                    "src/tex/figures/Fig3.png"
+                ],
+                "datasets": [],
+                "dependencies": [],
+                "command": "python src/scripts/fig3.py",
+                "static": false
+            },
+            "fig:disc_fraction_age": {
+                "script": "src/scripts/fig4.py",
+                "graphics": [
+                    "src/tex/figures/Fig4.png"
+                ],
+                "datasets": [],
+                "dependencies": [],
+                "command": "python src/scripts/fig4.py",
+                "static": false
+            },
+            "fig:mass_accretion_age": {
+                "script": "src/scripts/fig5.py",
+                "graphics": [
+                    "src/tex/figures/Fig5.png"
+                ],
+                "datasets": [],
+                "dependencies": [],
+                "command": "python src/scripts/fig5.py",
+                "static": false
+            },
+            "free-floating-dynamic": {
+                "script": null,
+                "graphics": [],
+                "datasets": [],
+                "dependencies": [],
+                "command": null,
+                "static": false
+            },
+            "free-floating-static": {
+                "script": null,
+                "graphics": [],
+                "datasets": [],
+                "dependencies": [],
+                "command": "cp  src/tex/figures",
+                "static": true
+            }
+        },
+        "files": []
+    },
+    "cached_deps": [],
+    "dag_dependencies": {},
+    "dag_dependencies_recursive": {},
+    "labels": {},
+    "git_sha": "e2a92fb5ab26d2d9ae948f30bf0583b1c7bf33b2",
+    "git_url": "https://github.com/GiovanniPicogna/disc-photoevaporation-disk-radii",
+    "git_slug": "GiovanniPicogna/disc-photoevaporation-disk-radii",
+    "git_branch": "main",
+    "github_actions": false,
+    "github_runid": "",
+    "git_tag": ""
+}

@@ -1,0 +1,8 @@
+prefix=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/6f58972e3168fc1937d8c193aac334e2_
+includedir=${prefix}/include
+
+Name: cairo-ft
+Description: FreeType font backend for cairo graphics library
+Version: 1.18.0
+Requires: cairo, freetype2 >=  9.7.3
+Cflags: -I${includedir}

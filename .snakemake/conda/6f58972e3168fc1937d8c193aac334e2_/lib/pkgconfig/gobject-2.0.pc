@@ -1,0 +1,12 @@
+prefix=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/6f58972e3168fc1937d8c193aac334e2_
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: GObject
+Description: GLib Type, Object, Parameter and Signal Library
+Version: 2.86.0
+Requires: glib-2.0
+Requires.private: libffi >=  3.0.0
+Libs: -L${libdir} -lgobject-2.0
+Libs.private: -lintl
+Cflags: -I${includedir}

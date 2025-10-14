@@ -1,0 +1,131 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job                          count    min threads    max threads
+-------------------------  -------  -------------  -------------
+syw__compile_copy_pdf            1              1              1
+syw__compile_copy_synctex        1              1              1
+syw__compile_pdf                 1              1              1
+syw__compile_setup               1              1              1
+syw__dag                         1              1              1
+syw__fig1                        1              1              1
+syw__fig2                        1              1              1
+syw__fig3                        1              1              1
+syw__fig4                        1              1              1
+syw__fig5                        1              1              1
+syw__main                        1              1              1
+total                           11              1              1
+
+Select jobs to execute...
+
+[Tue Oct 14 14:35:54 2025]
+Job 9: Building the workflow graph...
+Reason: Missing output files: /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/flags/SYW__DAG
+Downstream jobs will be updated after completion.
+
+Touching output file /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/flags/SYW__DAG.
+[Tue Oct 14 14:35:54 2025]
+Finished job 9.
+1 of 11 steps (9%) done
+Select jobs to execute...
+
+[Tue Oct 14 14:35:54 2025]
+Job 7: Generating figure output: src/tex/figures/Fig4.png...
+Reason: Updated input files: src/scripts/fig4.py
+
+Activating conda environment: .snakemake/conda/0e37d6ce77ff237ff2871454a4f1678f_
+[Tue Oct 14 14:36:10 2025]
+Finished job 7.
+2 of 11 steps (18%) done
+Select jobs to execute...
+
+[Tue Oct 14 14:36:10 2025]
+Job 8: Generating figure output: src/tex/figures/Fig5.png...
+Reason: Updated input files: src/scripts/fig5.py
+
+Activating conda environment: .snakemake/conda/0e37d6ce77ff237ff2871454a4f1678f_
+[Tue Oct 14 14:36:26 2025]
+Finished job 8.
+3 of 11 steps (27%) done
+Select jobs to execute...
+
+[Tue Oct 14 14:36:26 2025]
+Job 6: Generating figure output: src/tex/figures/Fig3.png...
+Reason: Updated input files: src/scripts/fig3.py
+
+Activating conda environment: .snakemake/conda/0e37d6ce77ff237ff2871454a4f1678f_
+[Tue Oct 14 14:36:29 2025]
+Finished job 6.
+4 of 11 steps (36%) done
+Select jobs to execute...
+
+[Tue Oct 14 14:36:29 2025]
+Job 4: Generating figure output: src/tex/figures/Fig1.png...
+Reason: Updated input files: src/scripts/fig1.py
+
+Activating conda environment: .snakemake/conda/0e37d6ce77ff237ff2871454a4f1678f_
+[Tue Oct 14 14:36:31 2025]
+Finished job 4.
+5 of 11 steps (45%) done
+Select jobs to execute...
+
+[Tue Oct 14 14:36:31 2025]
+Job 5: Generating figure output: src/tex/figures/Fig2.png...
+Reason: Updated input files: src/scripts/fig2.py
+
+Activating conda environment: .snakemake/conda/0e37d6ce77ff237ff2871454a4f1678f_
+[Tue Oct 14 14:36:36 2025]
+Finished job 5.
+6 of 11 steps (55%) done
+Select jobs to execute...
+
+[Tue Oct 14 14:36:36 2025]
+Job 3: Generating the article stylesheet metadata...
+Reason: Missing output files: /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/showyourwork-stamp.pdf, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/showyourwork.otf, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/showyourwork.tex, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/xstring.sty, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/listofitems.tex, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/showyourwork-logo.pdf, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/xstring.tex, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/ms.tex, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/showyourwork-metadata.tex, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/lineno.sty; Input files updated by another job: src/tex/figures/Fig2.png, src/tex/figures/Fig5.png, src/tex/figures/Fig3.png, src/tex/figures/Fig4.png, src/tex/figures/Fig1.png
+
+[Tue Oct 14 14:36:37 2025]
+Finished job 3.
+7 of 11 steps (64%) done
+Select jobs to execute...
+
+[Tue Oct 14 14:36:37 2025]
+Job 2: Compiling the article PDF...
+Reason: Missing output files: /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/ms.synctex.gz, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/ms.pdf; Input files updated by another job: /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/showyourwork-stamp.pdf, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/showyourwork.otf, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/showyourwork.tex, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/lineno.sty, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/xstring.sty, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/listofitems.tex, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/showyourwork-metadata.tex, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/ms.tex, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/showyourwork-logo.pdf, /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/xstring.tex
+
+Activating conda environment: .snakemake/conda/6f58972e3168fc1937d8c193aac334e2_
+[Tue Oct 14 14:36:44 2025]
+Finished job 2.
+8 of 11 steps (73%) done
+Select jobs to execute...
+
+[Tue Oct 14 14:36:44 2025]
+Job 1: Copying the article PDF...
+Reason: Input files updated by another job: /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/ms.pdf
+
+[Tue Oct 14 14:36:44 2025]
+Finished job 1.
+9 of 11 steps (82%) done
+Select jobs to execute...
+
+[Tue Oct 14 14:36:44 2025]
+Job 10: Copying the article synctex...
+Reason: Input files updated by another job: /Users/giovanni/Papers/disc-photoevaporation-disk-radii/.showyourwork/compile/ms.synctex.gz
+
+[Tue Oct 14 14:36:44 2025]
+Finished job 10.
+10 of 11 steps (91%) done
+Select jobs to execute...
+
+[Tue Oct 14 14:36:44 2025]
+localrule syw__main:
+    input: ms.pdf, ms.synctex.gz
+    jobid: 0
+    reason: Input files updated by another job: ms.synctex.gz, ms.pdf
+    resources: tmpdir=/var/folders/zc/y003zj4j3r9234xrflkf78040000gn/T
+
+[Tue Oct 14 14:36:44 2025]
+Finished job 0.
+11 of 11 steps (100%) done
+Complete log: .snakemake/log/2025-10-14T143525.087134.snakemake.log

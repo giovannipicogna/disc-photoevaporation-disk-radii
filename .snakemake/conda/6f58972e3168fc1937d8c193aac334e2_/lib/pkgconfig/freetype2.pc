@@ -1,0 +1,13 @@
+prefix=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/6f58972e3168fc1937d8c193aac334e2_
+exec_prefix=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/6f58972e3168fc1937d8c193aac334e2_
+libdir=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/6f58972e3168fc1937d8c193aac334e2_/lib
+includedir=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/6f58972e3168fc1937d8c193aac334e2_/include
+
+Name: FreeType 2
+URL: https://freetype.org
+Description: A free, high-quality, and portable font engine.
+Version: 26.4.20
+Requires: 
+Libs: -L/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/6f58972e3168fc1937d8c193aac334e2_/lib -lfreetype
+Libs.private: 
+Cflags: -I${includedir}/freetype2

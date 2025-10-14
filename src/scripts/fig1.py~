@@ -1,0 +1,623 @@
+"""
+Script to create a corner-style plot of r1 vs disc mass with marginal KDE distributions.
+
+Creates a main scatter plot of critical radius vs disc mass with KDE distributions
+along the margins showing the individual parameter distributions.
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+import json
+import os
+from scipy.stats import gaussian_kde
+from matplotlib.gridspec import GridSpec
+
+# Try to use science plots style if available
+try:
+    import scienceplots
+    plt.style.use('science')
+    print("Using scienceplots style for publication quality")
+except ImportError:
+    print("scienceplots not available, using default matplotlib style")
+    
+# Configure matplotlib for single-column A4 publication
+plt.rcParams.update({
+#    'text.usetex': False,  # Disable LaTeX to avoid rendering issues
+#    'font.family': 'sans-serif',
+#    'font.sans-serif': ['DejaVu Sans'],
+#    'axes.unicode_minus': False,
+#    # Font sizes optimized for single-column A4 layout (3.5" width)
+#    'font.size': 9,
+    'axes.labelsize': 9,
+#    'axes.titlesize': 10,
+    'xtick.labelsize': 8,
+    'ytick.labelsize': 8,
+#    'legend.fontsize': 8,
+#    'figure.titlesize': 11,
+#    # Line and marker properties
+#    'lines.linewidth': 1.5,
+#    'lines.markersize': 3,
+#    'patch.linewidth': 0.5,
+#    'axes.linewidth': 0.8,
+#    'grid.linewidth': 0.5,
+#    # Error bar properties
+#    'errorbar.capsize': 2,
+})
+
+# Constants
+AU = 1.496e13  # cm to AU conversion
+M_sun = 1.989e33  # g
+
+
+def read_params_from_json(params_path):
+    """Read parameters from a parameters.dat JSON file."""
+    try:
+        with open(params_path, 'r') as f:
+            params = json.load(f)
+        
+        # Extract relevant parameters
+        result = {}
+        if 'r1' in params:
+            result['r1'] = float(params['r1'])  # Critical radius in AU
+        if 'm0' in params:
+            result['m0'] = float(params['m0'])  # Disc mass in M_sun
+        if 'mstar' in params:
+            result['mstar'] = float(params['mstar'])  # Stellar mass in M_sun
+        if 'L_x' in params:
+            # X-ray luminosity in 10^30 erg/s
+            result['L_x'] = float(params['L_x'])
+            
+        return result if result else None
+    except (json.JSONDecodeError, FileNotFoundError, ValueError):
+        return None
+
+
+def collect_parameters(base_dir):
+    """Collect all parameters from subdirectories."""
+    data_list = []
+    run_names = []
+    
+    # Find all subdirectories
+    subdirs = [d for d in os.listdir(base_dir)
+               if os.path.isdir(os.path.join(base_dir, d))]
+    
+    print(f"Found {len(subdirs)} subdirectories in {base_dir}")
+    
+    for subdir in subdirs:
+        params_path = os.path.join(base_dir, subdir, "parameters.dat")
+        
+        if os.path.exists(params_path):
+            params = read_params_from_json(params_path)
+            if params is not None and 'r1' in params:
+                data_list.append(params)
+                run_names.append(subdir)
+            else:
+                print(f"Warning: Could not read parameters from {subdir}")
+        else:
+            print(f"Warning: parameters.dat not found in {subdir}")
+    
+    # Print a sample of available parameters for debugging
+    if len(data_list) > 0:
+        print(f"Sample parameters from first data point: {list(data_list[0].keys())}")
+        
+        # Check for disc mass related parameters
+        disc_params = [key for key in data_list[0].keys() if 'disc' in key.lower() or 'mass' in key.lower() or 'm0' in key.lower()]
+        print(f"Disc/mass related parameters: {disc_params}")
+        
+        # Check for r1 related parameters  
+        r1_params = [key for key in data_list[0].keys() if 'r1' in key.lower() or 'radius' in key.lower()]
+        print(f"r1/radius related parameters: {r1_params}")
+    
+    print(f"Successfully read parameters from {len(data_list)} runs")
+    return data_list, run_names
+
+
+def power_law(x, a, b):
+    """Power law function: y = a * x^b"""
+    return a * x**b
+
+
+def create_mstar_lx_corner_plot(data_list, output_file='mstar_lx_corner.png'):
+    """Create corner-style plot for stellar mass vs X-ray luminosity."""
+    
+    # Extract data
+    mstar_values = []
+    lx_values = []
+    
+    for params in data_list:
+        if 'mstar' in params and 'L_x' in params:
+            mstar_values.append(params['mstar'])
+            lx_values.append(params['L_x'])
+    
+    if len(mstar_values) == 0:
+        print("No valid mstar vs L_x data found!")
+        return np.array([]), np.array([])
+    
+    mstar_values = np.array(mstar_values)
+    lx_values = np.array(lx_values)
+    
+    print("Stellar Mass vs X-ray Luminosity corner plot analysis:")
+    print(f"N = {len(mstar_values)}")
+    print(f"M_star range = {mstar_values.min():.2f} - {mstar_values.max():.2f} M_sun")
+    print(f"L_x range = {lx_values.min():.2f} - {lx_values.max():.2f} x 10^30 erg/s")
+    
+    # Create figure optimized for single-column A4 layout (3.5" wide)
+    fig = plt.figure(figsize=(3.35, 3.2))
+    
+    # Create gridspec: main plot takes most space, margins for KDEs
+    gs = GridSpec(3, 3, figure=fig,
+                  width_ratios=[3, 0.8, 0.2],
+                  height_ratios=[0.6, 3, 0.6],
+                  hspace=0.12, wspace=0.12)
+    
+    # Adjust margins for publication quality - space for y-labels
+    fig.subplots_adjust(left=0.15, bottom=0.12, right=0.95, top=0.92)
+    
+    # Define subplots
+    ax_main = fig.add_subplot(gs[1, 0])      # Main scatter plot
+    ax_right = fig.add_subplot(gs[1, 1])     # Right KDE (L_x)
+    ax_bottom = fig.add_subplot(gs[2, 0])    # Bottom KDE (M_star)
+    
+    # Main scatter plot (log-log) with publication-optimized settings
+    ax_main.loglog(mstar_values, lx_values, 'o', alpha=0.7, markersize=2,
+                   color='darkred', label='Data', markeredgewidth=0)
+    
+    # Add observed relation L_x ∝ M_*^1.54 (normalized to median of data)
+    median_mstar = np.median(mstar_values)
+    median_lx = np.median(lx_values)
+    norm_factor = median_lx / (median_mstar**1.54)
+    
+    # Plot observed relation line
+    mstar_fit = np.logspace(np.log10(mstar_values.min()),
+                            np.log10(mstar_values.max()), 100)
+    lx_obs = norm_factor * (mstar_fit**1.54)
+    ax_main.loglog(mstar_fit, lx_obs, color='green', linewidth=1.5,
+                   linestyle=':', label=r'$L_X \propto M_\star^{1.54}$')
+    
+    print("Added observed relation: L_x ∝ M_*^1.54")
+    
+    ax_main.set_xlabel('')  # Remove bottom xlabel
+    ax_main.set_ylabel(r'$L_X$ [10$^{30}$ erg s$^{-1}$]')
+    ax_main.yaxis.set_label_coords(-0.18, 0.5)  # Move y-label further left
+    ax_main.legend(fontsize=7, loc='upper left', frameon=True,
+                   fancybox=True, shadow=False)
+    ax_main.grid(True, alpha=0.3, linewidth=0.5)
+    
+    # Move x-axis ticks and labels to the top
+    ax_main.xaxis.tick_top()
+    ax_main.xaxis.set_label_position('top')
+    ax_main.set_xlabel(r'M$_*$ [M$_\odot$]')
+    
+    # Right panel: KDE of L_x values (vertical orientation) in log space
+    lx_positive = lx_values[lx_values > 0]
+    if len(lx_positive) > 0:
+        log_lx = np.log10(lx_positive)
+        kde_log_lx = gaussian_kde(log_lx)
+        log_lx_range = np.linspace(log_lx.min(), log_lx.max(), 200)
+        kde_log_lx_values = kde_log_lx(log_lx_range)
+        
+        # Convert back to linear space for plotting
+        lx_range = 10**log_lx_range
+        
+        ax_right.plot(kde_log_lx_values, lx_range, 'r-', linewidth=2)
+        ax_right.fill_betweenx(lx_range, 0, kde_log_lx_values,
+                               alpha=0.3, color='red')
+    else:
+        print("Warning: No positive L_x values for log KDE")
+    ax_right.set_yscale('log')
+    ax_right.set_ylim(ax_main.get_ylim())  # Match main plot y-axis
+    ax_right.set_xlabel('Density')
+    ax_right.set_ylabel('')
+    ax_right.yaxis.set_ticklabels([])  # Remove y-tick labels
+    ax_right.grid(True, alpha=0.3)
+    
+    # Statistical labels removed for cleaner publication appearance
+    
+    # Bottom panel: KDE of stellar masses (horizontal orientation) in log space
+    mstar_positive = mstar_values[mstar_values > 0]
+    if len(mstar_positive) > 0:
+        log_mstar = np.log10(mstar_positive)
+        kde_log_mstar = gaussian_kde(log_mstar)
+        log_mstar_range = np.linspace(log_mstar.min(), log_mstar.max(), 200)
+        kde_log_mstar_values = kde_log_mstar(log_mstar_range)
+        
+        # Convert back to linear space for plotting
+        mstar_range = 10**log_mstar_range
+        
+        ax_bottom.plot(mstar_range, kde_log_mstar_values, 'b-', linewidth=2)
+        ax_bottom.fill_between(mstar_range, 0, kde_log_mstar_values, alpha=0.3,
+                               color='blue')
+    else:
+        print("Warning: No positive M_star values for log KDE")
+    ax_bottom.set_xscale('log')
+    ax_bottom.set_xlim(ax_main.get_xlim())  # Match main plot x-axis
+    ax_bottom.set_ylabel('Density')
+    ax_bottom.set_xlabel('')
+    ax_bottom.tick_params(axis='x', which='both', bottom=False, top=False,
+                          labelbottom=False)  # Remove x-ticks and labels
+    ax_bottom.grid(True, alpha=0.3)
+    
+    # Statistical labels removed for cleaner publication appearance
+    
+    # Save the figure
+    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    print(f"Stellar mass vs X-ray luminosity corner plot saved as: {output_file}")
+    plt.close(fig)
+    
+    return mstar_values, lx_values
+
+
+def create_corner_plot(data_list, output_file='corner_plot.png'):
+    """Create corner-style plot for critical radius vs disc mass."""
+    
+    # Extract data
+    r1_values = []
+    mdisk_values = []
+    
+    for params in data_list:
+        if 'r1' in params and 'm0' in params:
+            r1_values.append(params['r1'])
+            mdisk_values.append(params['m0'] * 1000)  # Convert to Earth masses
+    
+    if len(r1_values) == 0:
+        print("No valid r1 vs disc_mass data found!")
+        return np.array([]), np.array([])
+    
+    r1_values = np.array(r1_values)
+    mdisk_values = np.array(mdisk_values)
+    
+    print("Critical Radius vs Disc Mass corner plot analysis:")
+    print(f"N = {len(r1_values)}")
+    print(f"r1 range = {r1_values.min():.2f} - {r1_values.max():.2f} AU")
+    print(f"m0 range = {mdisk_values.min():.2f} - {mdisk_values.max():.2f} "
+          f"M_earth")
+    
+    # Create figure optimized for single-column A4 layout (3.5" wide)
+    fig = plt.figure(figsize=(3.35, 3.2))
+    
+    # Create gridspec: main plot takes most space, margins for KDEs
+    gs = GridSpec(3, 3, figure=fig,
+                  width_ratios=[3, 0.8, 0.2],
+                  height_ratios=[0.6, 3, 0.6],
+                  hspace=0.12, wspace=0.12)
+    
+    # Adjust margins for publication quality - space for y-labels
+    fig.subplots_adjust(left=0.15, bottom=0.12, right=0.95, top=0.92)
+    
+    # Define subplots
+    ax_main = fig.add_subplot(gs[1, 0])      # Main scatter plot
+    ax_right = fig.add_subplot(gs[1, 1])     # Right KDE (disc mass)
+    ax_bottom = fig.add_subplot(gs[2, 0])    # Bottom KDE (r1)
+    
+    # Main scatter plot (log-log) with publication-optimized settings
+    ax_main.loglog(r1_values, mdisk_values, 'o', alpha=0.7, markersize=2,
+                   color='steelblue', label='Data', markeredgewidth=0)
+    
+    # Add observed relation M_disc ∝ r_1^1.7 (normalized to median of data)
+    median_r1 = np.median(r1_values)
+    median_m0 = np.median(mdisk_values)
+    norm_factor = median_m0 / (median_r1**1.7)
+    
+    # Plot observed relation line
+    r1_fit = np.logspace(np.log10(r1_values.min()),
+                         np.log10(r1_values.max()), 100)
+    m0_obs = norm_factor * (r1_fit**1.7)
+    ax_main.loglog(r1_fit, m0_obs, color='green', linewidth=1.5,
+                   linestyle=':', label=r'$M_\mathrm{d} \propto {r_1}^{1.7}$')
+    
+    print("Added observed relation: M_disc ∝ r_1^1.7")
+    
+    ax_main.set_xlabel('')  # Remove bottom xlabel
+    ax_main.set_ylabel(r'M$_{d}$ [M$_\oplus$]')
+    ax_main.yaxis.set_label_coords(-0.18, 0.5)  # Move y-label further left
+    ax_main.legend(fontsize=7, loc='upper left', frameon=True,
+                   fancybox=True, shadow=False)
+    ax_main.grid(True, alpha=0.3, linewidth=0.5)
+    
+    # Move x-axis ticks and labels to the top
+    ax_main.xaxis.tick_top()
+    ax_main.xaxis.set_label_position('top')
+    ax_main.set_xlabel(r'r$_1$ [AU]')
+    
+    # Right panel: KDE of disc masses (vertical orientation) in log space
+    # Filter out zero values for log calculation
+    m0_nonzero = mdisk_values[mdisk_values > 0]
+    if len(m0_nonzero) > 0:
+        log_m0 = np.log10(m0_nonzero)
+        kde_log_m0 = gaussian_kde(log_m0)
+        log_m0_range = np.linspace(log_m0.min(), log_m0.max(), 200)
+        kde_log_m0_values = kde_log_m0(log_m0_range)
+        
+        # Convert back to linear space for plotting
+        m0_range = 10**log_m0_range
+        
+        ax_right.plot(kde_log_m0_values, m0_range, 'r-', linewidth=2)
+        ax_right.fill_betweenx(m0_range, 0, kde_log_m0_values,
+                               alpha=0.3, color='red')
+    else:
+        print("Warning: No positive disc mass values for log KDE")
+    ax_right.set_yscale('log')
+    ax_right.set_ylim(ax_main.get_ylim())  # Match main plot y-axis
+    ax_right.set_xlabel('Density')
+    ax_right.set_ylabel('')
+    ax_right.yaxis.set_ticklabels([])  # Remove y-tick labels
+    ax_right.grid(True, alpha=0.3)
+    
+    # Statistical labels removed for cleaner publication appearance
+    
+    # Bottom panel: KDE of critical radii (horizontal orientation) in log space
+    # All r1 values should be positive, but check anyway
+    r1_positive = r1_values[r1_values > 0]
+    if len(r1_positive) > 0:
+        log_r1 = np.log10(r1_positive)
+        kde_log_r1 = gaussian_kde(log_r1)
+        log_r1_range = np.linspace(log_r1.min(), log_r1.max(), 200)
+        kde_log_r1_values = kde_log_r1(log_r1_range)
+        
+        # Convert back to linear space for plotting
+        r1_range = 10**log_r1_range
+        
+        ax_bottom.plot(r1_range, kde_log_r1_values, 'b-', linewidth=2)
+        ax_bottom.fill_between(r1_range, 0, kde_log_r1_values, alpha=0.3,
+                               color='blue')
+    else:
+        print("Warning: No positive r1 values for log KDE")
+    ax_bottom.set_xscale('log')
+    ax_bottom.set_xlim(ax_main.get_xlim())  # Match main plot x-axis
+    ax_bottom.set_ylabel('Density')
+    ax_bottom.set_xlabel('')
+    ax_bottom.tick_params(axis='x', which='both', bottom=False, top=False,
+                          labelbottom=False)  # Remove x-ticks and labels
+    ax_bottom.grid(True, alpha=0.3)
+    
+    # Statistical labels removed for cleaner publication appearance
+    
+    # Save the figure
+    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    print(f"Corner plot saved as: {output_file}")
+    plt.close(fig)
+    
+    return r1_values, mdisk_values
+
+
+def create_combined_corner_plot(data_list,
+                                output_file='fig.png'):
+    """Create a single figure with two horizontal corner plots."""
+    
+    # Extract data for both plots
+    mstar_values = []
+    lx_values = []
+    r1_values = []
+    mdisk_values = []
+    
+    for params in data_list:
+        if 'mstar' in params and 'L_x' in params:
+            mstar_values.append(params['mstar'])
+            lx_values.append(params['L_x'])
+        if 'r1' in params and 'm0' in params:
+            r1_values.append(params['r1'])
+            mdisk_values.append(params['m0'] * 1000)  # Convert to Earth masses
+    
+    mstar_values = np.array(mstar_values)
+    lx_values = np.array(lx_values)
+    r1_values = np.array(r1_values)
+    mdisk_values = np.array(mdisk_values)
+    
+    print("Combined corner plot analysis:")
+    print(f"Stellar mass vs X-ray luminosity: N = {len(mstar_values)}")
+    print(f"Critical radius vs disc mass: N = {len(r1_values)}")
+    
+    # Create figure optimized for two horizontal panels (7" wide x 3.2" tall)
+    fig = plt.figure(figsize=(6.7, 3.2))
+    
+    # Create gridspec for two corner plots side by side
+    # Each corner plot has 3x3 subgrid
+    gs_main = GridSpec(1, 2, figure=fig, wspace=0.25)
+    
+    # Adjust margins for publication quality - more space for y-labels
+    fig.subplots_adjust(left=0.12, bottom=0.15, right=0.95, top=0.90)
+    
+    # === LEFT PANEL: Stellar Mass vs X-ray Luminosity ===
+    gs_left = gs_main[0].subgridspec(3, 3,
+                                     width_ratios=[3, 0.8, 0.2],
+                                     height_ratios=[0.6, 3, 0.6],
+                                     hspace=0.12, wspace=0.12)
+    
+    ax_left_main = fig.add_subplot(gs_left[1, 0])
+    ax_left_right = fig.add_subplot(gs_left[1, 1])
+    ax_left_bottom = fig.add_subplot(gs_left[2, 0])
+    
+    # Left main scatter plot
+    ax_left_main.loglog(mstar_values, lx_values, 'o', alpha=0.7, markersize=2,
+                        color='steelblue', label='Data', markeredgewidth=0)
+    
+    # Add observed relation L_x ∝ M_*^1.54
+    median_mstar = np.median(mstar_values)
+    median_lx = np.median(lx_values)
+    norm_factor = median_lx / (median_mstar**1.54)
+    
+    mstar_fit = np.logspace(np.log10(mstar_values.min()),
+                            np.log10(mstar_values.max()), 100)
+    lx_obs = norm_factor * (mstar_fit**1.54)
+    ax_left_main.loglog(mstar_fit, lx_obs, color='red', linewidth=1.5,
+                        linestyle='--', label=r'$L_X \propto M_\star^{1.54}$')
+    
+    ax_left_main.set_xlabel('')
+    ax_left_main.set_ylabel(r'$L_X$ [10$^{30}$ erg s$^{-1}$]')
+    ax_left_main.yaxis.set_label_coords(-0.22, 0.5)
+    ax_left_main.legend(fontsize=7, loc='upper left', frameon=True)
+    ax_left_main.grid(True, alpha=0.3, linewidth=0.5)
+    
+    # Move x-axis to top
+    ax_left_main.xaxis.tick_top()
+    ax_left_main.xaxis.set_label_position('top')
+    ax_left_main.set_xlabel(r'M$_*$ [M$_\odot$]')
+    
+    # Left right panel: KDE of L_x values
+    lx_positive = lx_values[lx_values > 0]
+    if len(lx_positive) > 0:
+        log_lx = np.log10(lx_positive)
+        kde_log_lx = gaussian_kde(log_lx)
+        log_lx_range = np.linspace(log_lx.min(), log_lx.max(), 200)
+        kde_log_lx_values = kde_log_lx(log_lx_range)
+        lx_range = 10**log_lx_range
+        
+        ax_left_right.plot(kde_log_lx_values, lx_range, 'r-', linewidth=2)
+        ax_left_right.fill_betweenx(lx_range, 0, kde_log_lx_values,
+                                    alpha=0.3, color='red')
+    
+    ax_left_right.set_yscale('log')
+    ax_left_right.set_ylim(ax_left_main.get_ylim())
+    ax_left_right.set_xlabel('Density')
+    ax_left_right.set_ylabel('')
+    ax_left_right.yaxis.set_ticklabels([])
+    ax_left_right.grid(True, alpha=0.3)
+    
+    # Left bottom panel: KDE of stellar masses
+    mstar_positive = mstar_values[mstar_values > 0]
+    if len(mstar_positive) > 0:
+        log_mstar = np.log10(mstar_positive)
+        kde_log_mstar = gaussian_kde(log_mstar)
+        log_mstar_range = np.linspace(log_mstar.min(), log_mstar.max(), 200)
+        kde_log_mstar_values = kde_log_mstar(log_mstar_range)
+        mstar_range = 10**log_mstar_range
+        
+        ax_left_bottom.plot(mstar_range, kde_log_mstar_values, 'b-',
+                            linewidth=2)
+        ax_left_bottom.fill_between(mstar_range, 0, kde_log_mstar_values,
+                                    alpha=0.3, color='blue')
+    
+    ax_left_bottom.set_xscale('log')
+    ax_left_bottom.set_xlim(ax_left_main.get_xlim())
+    ax_left_bottom.set_ylabel('Density')
+    ax_left_bottom.set_xlabel('')
+    ax_left_bottom.tick_params(axis='x', which='both', bottom=False, top=False,
+                               labelbottom=False)
+    ax_left_bottom.grid(True, alpha=0.3)
+    
+    # === RIGHT PANEL: Critical Radius vs Disc Mass ===
+    gs_right = gs_main[1].subgridspec(3, 3,
+                                      width_ratios=[3, 0.8, 0.2],
+                                      height_ratios=[0.6, 3, 0.6],
+                                      hspace=0.12, wspace=0.12)
+    
+    ax_right_main = fig.add_subplot(gs_right[1, 0])
+    ax_right_right = fig.add_subplot(gs_right[1, 1])
+    ax_right_bottom = fig.add_subplot(gs_right[2, 0])
+    
+    # Right main scatter plot
+    ax_right_main.loglog(r1_values, mdisk_values, 'o', alpha=0.7, markersize=2,
+                         color='steelblue', label='Data', markeredgewidth=0)
+    
+    # Add observed relation M_disc ∝ r_1^1.7
+    median_r1 = np.median(r1_values)
+    median_m0 = np.median(mdisk_values)
+    norm_factor = median_m0 / (median_r1**1.7)
+    
+    r1_fit = np.logspace(np.log10(r1_values.min()),
+                         np.log10(r1_values.max()), 100)
+    m0_obs = norm_factor * (r1_fit**1.7)
+    ax_right_main.loglog(r1_fit, m0_obs, color='red', linewidth=1.5,
+                         linestyle='--',
+                         label=r'$M_\mathrm{d} \propto {r_1}^{1.7}$')
+    
+    ax_right_main.set_xlabel('')
+    ax_right_main.set_ylabel(r'M$_{d}$ [M$_\oplus$]')
+    ax_right_main.yaxis.set_label_coords(-0.22, 0.5)
+    ax_right_main.legend(fontsize=7, loc='upper left', frameon=True)
+    ax_right_main.grid(True, alpha=0.3, linewidth=0.5)
+    
+    # Move x-axis to top
+    ax_right_main.xaxis.tick_top()
+    ax_right_main.xaxis.set_label_position('top')
+    ax_right_main.set_xlabel(r'r$_1$ [AU]')
+    
+    # Right right panel: KDE of disc masses
+    m0_nonzero = mdisk_values[mdisk_values > 0]
+    if len(m0_nonzero) > 0:
+        log_m0 = np.log10(m0_nonzero)
+        kde_log_m0 = gaussian_kde(log_m0)
+        log_m0_range = np.linspace(log_m0.min(), log_m0.max(), 200)
+        kde_log_m0_values = kde_log_m0(log_m0_range)
+        m0_range = 10**log_m0_range
+        
+        ax_right_right.plot(kde_log_m0_values, m0_range, 'r-', linewidth=2)
+        ax_right_right.fill_betweenx(m0_range, 0, kde_log_m0_values,
+                                     alpha=0.3, color='red')
+    
+    ax_right_right.set_yscale('log')
+    ax_right_right.set_ylim(ax_right_main.get_ylim())
+    ax_right_right.set_xlabel('Density')
+    ax_right_right.set_ylabel('')
+    ax_right_right.yaxis.set_ticklabels([])
+    ax_right_right.grid(True, alpha=0.3)
+    
+    # Right bottom panel: KDE of critical radii
+    r1_positive = r1_values[r1_values > 0]
+    if len(r1_positive) > 0:
+        log_r1 = np.log10(r1_positive)
+        kde_log_r1 = gaussian_kde(log_r1)
+        log_r1_range = np.linspace(log_r1.min(), log_r1.max(), 200)
+        kde_log_r1_values = kde_log_r1(log_r1_range)
+        r1_range = 10**log_r1_range
+        
+        ax_right_bottom.plot(r1_range, kde_log_r1_values, 'b-', linewidth=2)
+        ax_right_bottom.fill_between(r1_range, 0, kde_log_r1_values,
+                                     alpha=0.3, color='blue')
+    
+    ax_right_bottom.set_xscale('log')
+    ax_right_bottom.set_xlim(ax_right_main.get_xlim())
+    ax_right_bottom.set_ylabel('Density')
+    ax_right_bottom.set_xlabel('')
+    ax_right_bottom.tick_params(axis='x', which='both', bottom=False,
+                                top=False, labelbottom=False)
+    ax_right_bottom.grid(True, alpha=0.3)
+    
+    # Save the figure
+    plt.savefig(paths.figures / output_file, dpi=300, bbox_inches='tight')
+    print(f"Combined corner plot saved as: {output_file}")
+    plt.close(fig)
+    
+    return mstar_values, lx_values, r1_values, mdisk_values
+
+
+def main():
+    # Path to the population synthesis directory
+    base_dir = (paths.data / "pop_compact_discs_new/")
+    
+    print(f"Analyzing disc parameters from: {base_dir}")
+    
+    # Check if directory exists
+    if not os.path.exists(base_dir):
+        print(f"Error: Directory {base_dir} does not exist!")
+        return
+    
+    # Collect all parameters from subdirectories
+    data_list, run_names = collect_parameters(base_dir)
+    
+    if len(data_list) == 0:
+        print("No valid parameter data found!")
+        return
+    
+    # Create combined corner plot
+    print("\n" + "="*60)
+    print("CREATING COMBINED CORNER PLOT")
+    print("="*60)
+    mstar_vals, lx_vals, r1_vals, m0_vals = create_combined_corner_plot(
+        data_list, 'Fig1.png')
+    
+    print("Combined corner plot completed successfully!")
+    print("Final statistics:")
+    print(f"- M_star vs L_x data points: {len(mstar_vals)}")
+    print(f"- r1 vs disc mass data points: {len(r1_vals)}")
+    print(f"- M_star range: {mstar_vals.min():.2f} - {mstar_vals.max():.2f} M_sun")
+    print(f"- L_x range: {lx_vals.min():.2f} - {lx_vals.max():.2f} x 10^30 erg/s")
+    print(f"- r1 range: {r1_vals.min():.2f} - {r1_vals.max():.2f} AU")
+    print(f"- Disc mass range: {m0_vals.min():.2f} - {m0_vals.max():.2f} M_earth")
+    
+    print("\n" + "="*60)
+    print("COMBINED CORNER PLOT COMPLETED SUCCESSFULLY!")
+    print("="*60)
+
+
+if __name__ == "__main__":
+    main()

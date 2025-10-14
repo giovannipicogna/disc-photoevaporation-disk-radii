@@ -1,0 +1,13 @@
+prefix=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/6f58972e3168fc1937d8c193aac334e2_
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+gmodule_supported=true
+
+Name: GModule
+Description: Dynamic module loader for GLib
+Version: 2.86.0
+Requires: glib-2.0
+Libs: -L${libdir} -lgmodule-2.0
+Libs.private: -lintl
+Cflags: -I${includedir}

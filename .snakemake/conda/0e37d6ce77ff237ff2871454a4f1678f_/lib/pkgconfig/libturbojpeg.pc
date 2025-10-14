@@ -1,0 +1,10 @@
+prefix=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/0e37d6ce77ff237ff2871454a4f1678f_
+exec_prefix=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/0e37d6ce77ff237ff2871454a4f1678f_
+libdir=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/0e37d6ce77ff237ff2871454a4f1678f_/lib
+includedir=/Users/giovanni/Papers/disc-photoevaporation-disk-radii/.snakemake/conda/0e37d6ce77ff237ff2871454a4f1678f_/include
+
+Name: libturbojpeg
+Description: A SIMD-accelerated JPEG codec that provides the TurboJPEG API
+Version: 3.1.0
+Libs: -L${libdir} -lturbojpeg
+Cflags: -I${includedir}
