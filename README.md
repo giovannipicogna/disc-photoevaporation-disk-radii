@@ -18,14 +18,15 @@
 </a>
 </p>
 
-# MNRAS Paper Template
+# The dispersal of compact protoplanetary discs
 
 An open source scientific article based on the offical LaTeX template of 
 [Monthly Notices of the Royal Astronomical Society](https://academic.oup.com/mnras)
 created using the [showyourwork](https://github.com/showyourwork/showyourwork) workflow.
 
-1. Create a `Python>=3.11` + `pip` virtual environment manager and install `showyourwork`
-2. Use this template repository to create a new repository
-3. Clone the new repository to your local machine
-4. Run `showyourwork build` inside your new repo to build the article
-5. Start editing!
+## ABSTRACT
+
+Compact protoplanetary discs are becoming increasingly prominent in observations. Their dispersal pathways may differ substantially from those of extended discs.We aim to quantify the role of the disc outer radius in internal photoevaporation, provide a simple scaling relation for compact discs, and test whether the resulting evolutionary tracks reproduce the observed inside-out clearing of young stellar populations. 
+We performed radiation-hydrodynamic simulations of X-ray-driven photoevaporation for discs with different outer radii, and derived the dependence of the total mass-loss rate on the critical radius. We incorporated this scaling into disc population synthesis models.
+We find that the surface mass-loss profiles are nearly independent of disc size, but their integrated wind rates are reduced according to the cumulative mass-loss rate distribution. Compact discs disperse more slowly, evolving via inside-out clearing consistent with observational diagnostics. Population synthesis shows that the scaled prescription reproduces both disc fractions and the persistence of highly accreting systems at late times (t > 4 Myr) better than unscaled models.
+Disc dispersal prescriptions must include the dependence on disc outer radius to capture the evolution of compact discs. The proposed scaling provides a simple, physically motivated correction that better predicts the growing observational evidence for compact discs and inside-out dispersal.

@@ -22,26 +22,9 @@ except ImportError:
     
 # Configure matplotlib for single-column A4 publication
 plt.rcParams.update({
-#    'text.usetex': False,  # Disable LaTeX to avoid rendering issues
-#    'font.family': 'sans-serif',
-#    'font.sans-serif': ['DejaVu Sans'],
-#    'axes.unicode_minus': False,
-#    # Font sizes optimized for single-column A4 layout (3.5" width)
-#    'font.size': 9,
     'axes.labelsize': 9,
-#    'axes.titlesize': 10,
     'xtick.labelsize': 8,
     'ytick.labelsize': 8,
-#    'legend.fontsize': 8,
-#    'figure.titlesize': 11,
-#    # Line and marker properties
-#    'lines.linewidth': 1.5,
-#    'lines.markersize': 3,
-#    'patch.linewidth': 0.5,
-#    'axes.linewidth': 0.8,
-#    'grid.linewidth': 0.5,
-#    # Error bar properties
-#    'errorbar.capsize': 2,
 })
 
 # Constants
@@ -49,67 +32,58 @@ AU = 1.496e13  # cm to AU conversion
 M_sun = 1.989e33  # g
 
 
-def read_params_from_json(params_path):
-    """Read parameters from a parameters.dat JSON file."""
-    try:
-        with open(params_path, 'r') as f:
-            params = json.load(f)
-        
-        # Extract relevant parameters
-        result = {}
-        if 'r1' in params:
-            result['r1'] = float(params['r1'])  # Critical radius in AU
-        if 'm0' in params:
-            result['m0'] = float(params['m0'])  # Disc mass in M_sun
-        if 'mstar' in params:
-            result['mstar'] = float(params['mstar'])  # Stellar mass in M_sun
-        if 'L_x' in params:
-            # X-ray luminosity in 10^30 erg/s
-            result['L_x'] = float(params['L_x'])
-            
-        return result if result else None
-    except (json.JSONDecodeError, FileNotFoundError, ValueError):
-        return None
-
-
-def collect_parameters(base_dir):
-    """Collect all parameters from subdirectories."""
+def collect_parameters(csv_path):
+    """Collect all parameters from CSV file."""
+    import pandas as pd
+    
     data_list = []
-    run_names = []
     
-    # Find all subdirectories
-    subdirs = [d for d in os.listdir(base_dir)
-               if os.path.isdir(os.path.join(base_dir, d))]
+    print(f"Reading parameters from {csv_path}")
     
-    print(f"Found {len(subdirs)} subdirectories in {base_dir}")
-    
-    for subdir in subdirs:
-        params_path = os.path.join(base_dir, subdir, "parameters.dat")
+    try:
+        # Read the CSV file
+        df = pd.read_csv(csv_path)
         
-        if os.path.exists(params_path):
-            params = read_params_from_json(params_path)
-            if params is not None and 'r1' in params:
-                data_list.append(params)
-                run_names.append(subdir)
-            else:
-                print(f"Warning: Could not read parameters from {subdir}")
-        else:
-            print(f"Warning: parameters.dat not found in {subdir}")
-    
-    # Print a sample of available parameters for debugging
-    if len(data_list) > 0:
-        print(f"Sample parameters from first data point: {list(data_list[0].keys())}")
+        print(f"Found {len(df)} rows in CSV file")
+        print(f"CSV columns: {list(df.columns)}")
         
-        # Check for disc mass related parameters
-        disc_params = [key for key in data_list[0].keys() if 'disc' in key.lower() or 'mass' in key.lower() or 'm0' in key.lower()]
-        print(f"Disc/mass related parameters: {disc_params}")
+        # Convert each row to a dictionary with the expected parameter names
+        for idx, row in df.iterrows():
+            params = {}
+            
+            # Map CSV columns to parameter names
+            if 'mstar' in df.columns:
+                params['mstar'] = float(row['mstar'])
+            if 'L_x' in df.columns:
+                params['L_x'] = float(row['L_x'])
+            if 'm0' in df.columns:
+                params['m0'] = float(row['m0'])
+            if 'r1' in df.columns:
+                params['r1'] = float(row['r1'])
+            if 'alpha' in df.columns:
+                params['alpha'] = float(row['alpha'])
+            
+            data_list.append(params)
         
-        # Check for r1 related parameters  
-        r1_params = [key for key in data_list[0].keys() if 'r1' in key.lower() or 'radius' in key.lower()]
-        print(f"r1/radius related parameters: {r1_params}")
-    
-    print(f"Successfully read parameters from {len(data_list)} runs")
-    return data_list, run_names
+        # Print a sample of available parameters for debugging
+        if len(data_list) > 0:
+            print(f"Sample parameters from first data point: {list(data_list[0].keys())}")
+            
+            # Check for disc mass related parameters
+            disc_params = [key for key in data_list[0].keys() if 'disc' in key.lower() or 'mass' in key.lower() or 'm0' in key.lower()]
+            print(f"Disc/mass related parameters: {disc_params}")
+            
+            # Check for r1 related parameters  
+            r1_params = [key for key in data_list[0].keys() if 'r1' in key.lower() or 'radius' in key.lower()]
+            print(f"r1/radius related parameters: {r1_params}")
+        
+        print(f"Successfully read parameters from {len(data_list)} rows")
+        
+    except Exception as e:
+        print(f"Error reading CSV file: {e}")
+        return []
+
+    return data_list
 
 
 def power_law(x, a, b):
@@ -582,18 +556,18 @@ def create_combined_corner_plot(data_list,
 
 
 def main():
-    # Path to the population synthesis directory
-    base_dir = (paths.data / "pop_compact_discs_new/")
+    # Path to the CSV file with parameters
+    csv_path = paths.data / "parameters.csv"
     
-    print(f"Analyzing disc parameters from: {base_dir}")
+    print(f"Analyzing disc parameters from: {csv_path}")
     
-    # Check if directory exists
-    if not os.path.exists(base_dir):
-        print(f"Error: Directory {base_dir} does not exist!")
+    # Check if file exists
+    if not os.path.exists(csv_path):
+        print(f"Error: CSV file {csv_path} does not exist!")
         return
     
-    # Collect all parameters from subdirectories
-    data_list, run_names = collect_parameters(base_dir)
+    # Collect all parameters from CSV file
+    data_list = collect_parameters(csv_path)
     
     if len(data_list) == 0:
         print("No valid parameter data found!")
