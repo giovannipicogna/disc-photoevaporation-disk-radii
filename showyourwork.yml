@@ -31,6 +31,9 @@ datasets:
 
 # Custom file dependencies
 dependencies:
+  src/scripts/fig1.py:
+    - src/data/parameters.csv
+
   # src/scripts/my_script.py:
   #   - src/data/dataset_for_my_script.dat
   # src/tex/ms.tex:
@@ -70,11 +73,11 @@ scripts:
 # Display of the `showyourwork` stamp on first page
 stamp:
   # Show the stamp?
-  enabled: true
+  enabled: false
   # Stamp angle in degrees
   angle: -20.0
   # Stamp size in inches
-  size: 0.75
+  size: 0.5
   # Horizontal position in inches from right edge of paper
   xpos: 0.50
   # Vertical position in inches from top edge of paper
