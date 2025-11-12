@@ -1,5 +1,5 @@
 % mnras_template.tex 
-\documentclass[letters,fleqn,usenatbib]{mnras}
+\documentclass[fleqn,usenatbib]{mnras}
 
 % Import showyourwork magic
 \usepackage{showyourwork}
@@ -37,6 +37,8 @@
 % Please keep new commands to a minimum, and use \newcommand not \def to avoid
 % overwriting existing commands. Example:
 %\newcommand{\pcm}{\,cm$^{-2}$}	% per cm-squared
+
+\newcommand{\new}[1]{\textbf{#1}} % New text
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -141,7 +143,7 @@ where
 \label{eq:surf2}
   \dot{\mathrm{M}}_w(R) = 10^{a\log{R}^6 + b\log{R}^5 + c\log{R}^4 + d\log{R}^3 + e\log{R}^2 + f\log{R} + g}
 \end{equation}
-is the cumulative mass-loss rate, and the parameters $a$, $b$, $c$, $d$, $e$, $f$, $g$ are stellar-mass dependant and given in \citet[][Table 2]{2021MNRAS.508.3611P}.
+is the \new{normalised} cumulative mass-loss rate, and the parameters $a$, $b$, $c$, $d$, $e$, $f$, $g$ are stellar-mass dependant and given in \citet[][Table 2]{2021MNRAS.508.3611P}.
 The discs are initialized with a self-similar solution (for $\gamma = 1$):
 \begin{equation}
     \Sigma = \frac{M_0}{2 \pi r_1 R} T^{-3/2} \exp{\left[-\frac{(R/r_1)}{T}\right]}\,,

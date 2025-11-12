@@ -9,8 +9,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import warnings
 import paths
+import os
 from astropy import units as u
 from scipy.optimize import curve_fit
+import subprocess
+import matplotlib.font_manager as font_manager
 
 # Use scienceplots for publication-quality styling
 try:
@@ -20,19 +23,49 @@ try:
 except ImportError:
     print("Warning: scienceplots not found. Install with: pip install scienceplots")
     print("Falling back to basic matplotlib styling...")
-    # Minimal fallback styling
-    plt.rcParams.update({
-        'font.size': 8,
-        'font.family': 'serif',
-        'axes.linewidth': 0.8,
-        'legend.fontsize': 7,
-        'savefig.dpi': 300,
-        'savefig.bbox': 'tight'
-    })
 
-# Override specific parameters for single-column figure
+kpse_cp = subprocess.run(['kpsewhich', '-var-value', 'TEXMFDIST'], capture_output=True, check=True)
+font_loc1 = os.path.join(kpse_cp.stdout.decode('utf8').strip(), 'fonts', 'opentype', 'public', 'tex-gyre')
+print(f'loading TeX Gyre fonts from "{font_loc1}"')
+font_dirs = [font_loc1]
+font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+for font_file in font_files:
+    font_manager.fontManager.addfont(font_file)
+
+plt.rcParams['font.family'] = 'TeX Gyre Termes'
+plt.rcParams["mathtext.fontset"] = "stix"
+
+# MNRAS style configuration
+# Column width: 240pt = 10/3 inches for single column
+SMALL_SIZE = 7
+MEDIUM_SIZE = 8
+BIGGER_SIZE = 8
+
+plt.rcParams['text.usetex'] = False  # Disable LaTeX to avoid rendering issues
+
+plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
+# Try to use Nimbus Roman font (MNRAS standard)
+# try:
+#     plt.rc('font', family='Nimbus Roman')
+#    print("Using Nimbus Roman font (MNRAS standard)")
+# except:
+#    plt.rc('font', family='serif')
+#    print("Nimbus Roman not available, using default serif font")
+
+plt.rcParams["errorbar.capsize"] = 2
+
+# Override specific parameters for MNRAS single-column figure
 plt.rcParams.update({
-    'figure.figsize': [3.5, 2.25],  # Single column width
+    'figure.figsize': [10/3, 2.25],  # MNRAS single column width
+    'savefig.dpi': 400,
+    'savefig.bbox': 'tight',
     'savefig.pad_inches': 0.05
 })
 
@@ -396,8 +429,8 @@ def create_publication_figure(data_dict, fitting_results=None,
                             use_cleaned_data=False):
     """Create publication-quality mass loss rate comparison figure"""
     
-    # Create figure with single column width (3.5 inches)
-    fig, ax = plt.subplots(1, 1, figsize=(3.5, 2.25))
+    # Create figure with MNRAS single column width (10/3 inches)
+    fig, ax = plt.subplots(1, 1, figsize=(10/3, 2.25))
     
     # Plot data for each simulation
     for directory, data in data_dict.items():
@@ -503,8 +536,8 @@ def create_publication_figure(data_dict, fitting_results=None,
         # ax.axvline(outer_limit, color='gray', linestyle=':', alpha=0.6, linewidth=1.5)
     
     # Set axis properties
-    ax.set_xlabel(r'Radius [AU]', fontsize=9)
-    ax.set_ylabel(r'$\dot{M}_{\mathrm{w}}$ [M$_{\odot}$ yr$^{-1}$]', fontsize=9)
+    ax.set_xlabel(r'Radius [AU]', fontsize=SMALL_SIZE)
+    ax.set_ylabel(r'$\dot{M}_{\mathrm{w}}$ [M$_{\odot}$ yr$^{-1}$]', fontsize=SMALL_SIZE)
     
     # Set axis limits as requested
     ax.set_xlim(6, 200)
@@ -529,7 +562,7 @@ def create_publication_figure(data_dict, fitting_results=None,
     
     # Save figure
     save_path = paths.figures / "Fig2.png"
-    plt.savefig(save_path, dpi=400, bbox_inches='tight', pad_inches=0.05)
+    plt.savefig(save_path, format='png', bbox_inches='tight', pad_inches=0.05)
     
     print(f"Figure saved as {save_path}")
     
@@ -581,9 +614,6 @@ def main():
     # Create figure with fitting results using cleaned data
     fig, ax = create_publication_figure(cleaned_data_dict, fitting_results, 
                                       use_cleaned_data=True)
-    
-    # Show figure (optional)
-    plt.show()
     
     print("\nPublication figure created successfully!")
     print("Figure specifications:")

@@ -18,6 +18,8 @@ import os
 import glob
 import json
 import paths
+import subprocess
+import matplotlib.font_manager as font_manager
 
 # Try to use science plots style if available
 try:
@@ -40,17 +42,50 @@ except ImportError:
 AU = 1.496e13  # cm to AU conversion
 OUTPUT_TIMESTEP_YR = 10000  # Each output represents 10,000 years
 
-# Configure matplotlib for single-column A4 publication
+kpse_cp = subprocess.run(['kpsewhich', '-var-value', 'TEXMFDIST'], capture_output=True, check=True)
+font_loc1 = os.path.join(kpse_cp.stdout.decode('utf8').strip(), 'fonts', 'opentype', 'public', 'tex-gyre')
+print(f'loading TeX Gyre fonts from "{font_loc1}"')
+font_dirs = [font_loc1]
+font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+for font_file in font_files:
+    font_manager.fontManager.addfont(font_file)
+
+plt.rcParams['font.family'] = 'TeX Gyre Termes'
+plt.rcParams["mathtext.fontset"] = "stix"
+
+# MNRAS style configuration
+# Column width: 240pt = 10/3 inches for single column
+SMALL_SIZE = 7
+MEDIUM_SIZE = 8
+BIGGER_SIZE = 8
+
 plt.rcParams['text.usetex'] = False  # Disable LaTeX to avoid rendering issues
 
-# Set font sizes optimized for single-column A4 layout
-plt.rc('font', size=9.)
-plt.rc('xtick', labelsize=8.)
-plt.rc('ytick', labelsize=8.)
-plt.rc('axes', labelsize=9.)
-plt.rc('legend', fontsize=8.)
+plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
+# Try to use Nimbus Roman font (MNRAS standard)
+# try:
+#     plt.rc('font', family='Nimbus Roman')
+#    print("Using Nimbus Roman font (MNRAS standard)")
+# except:
+#    plt.rc('font', family='serif')
+#    print("Nimbus Roman not available, using default serif font")
+
 plt.rcParams["errorbar.capsize"] = 2
 
+# Override specific parameters for MNRAS single-column figure
+plt.rcParams.update({
+    'figure.figsize': [10/3, 5.],  # MNRAS single column width
+    'savefig.dpi': 400,
+    'savefig.bbox': 'tight',
+    'savefig.pad_inches': 0.05
+})
 
 # ============================================================================
 # DATA READING FUNCTIONS
@@ -152,9 +187,9 @@ def main():
     # ========================================================================
     # FIGURE CREATION AND FORMATTING
     # ========================================================================
-    # Create figure optimized for single-column A4 layout (3.5" wide, 3 rows)
+    # Create figure optimized for MNRAS single-column (10/3 inches wide, 3 rows)
     # Share x-axis within columns and y-axis within rows
-    fig, axes = plt.subplots(3, 2, figsize=(3.46457, 5.),
+    fig, axes = plt.subplots(3, 2, figsize=(10/3, 5.),
                              sharex='col', sharey='row')
     fig.subplots_adjust(left=0.12, bottom=0.12, right=0.88, top=0.80,
                         wspace=0.15, hspace=0.30)
@@ -189,7 +224,7 @@ def main():
                 print(f"Error: Directory {run_path} does not exist!")
                 ax.text(0.5, 0.5, f"Data not found\n{config_data['label']} {prescription}",
                         transform=ax.transAxes, ha='center', va='center',
-                        fontsize=8, style='italic')
+                        style='italic')
                 continue
             
             # Read grid file
@@ -269,25 +304,25 @@ def main():
             
             # Format subplot - only add labels and ticks where needed
             if row_idx == 2:  # Bottom row only
-                ax.set_xlabel('Radius [AU]', fontsize=9)
+                ax.set_xlabel('Radius [AU]')
             else:
                 # Remove x-tick labels for top and middle rows
                 ax.tick_params(axis='x', labelbottom=False)
                 
             if col_idx == 0:  # Left column only
-                ax.set_ylabel(r'$\Sigma$ [g/cm$^2$]', fontsize=9)
+                ax.set_ylabel(r'$\Sigma$ [g/cm$^2$]')
             else:
                 # Remove y-tick labels for right column
                 ax.tick_params(axis='y', labelleft=False)
             
             # Set title showing prescription and lifetime
             prescription_name = 'New' if prescription == 'new' else 'Old'
-            ax.set_title(f'{prescription_name} ({disc_lifetime_myr:.2f} Myr)', fontsize=9)
+            ax.set_title(f'{prescription_name} ({disc_lifetime_myr:.2f} Myr)')
             
             # Add row labels on the right side
             if col_idx == 1:
                 ax.text(1.08, 0.5, config_data['label'],
-                        transform=ax.transAxes, fontsize=10, fontweight='bold',
+                        transform=ax.transAxes, fontweight='bold',
                         va='center', ha='left', rotation=90)
             
             ax.grid(True, alpha=0.3)
@@ -298,7 +333,7 @@ def main():
             subplot_labels = ['a)', 'b)', 'c)', 'd)', 'e)', 'f)']
             label_idx = row_idx * 2 + col_idx
             ax.text(0.95, 0.95, subplot_labels[label_idx], transform=ax.transAxes,
-                    fontsize=11, fontweight='bold', va='top', ha='right')
+                    fontweight='bold', va='top', ha='right')
         
         row_idx += 1
     
@@ -318,7 +353,7 @@ def main():
     # ========================================================================
     # Save the figure with publication quality
     output_file = paths.figures / 'Fig3.png'
-    fig.savefig(output_file, format='png', dpi=400, bbox_inches='tight',
+    fig.savefig(output_file, format='png', bbox_inches='tight',
                 facecolor='white', edgecolor='none')
     print(f"Figure saved as: {output_file}")
     fig_w, fig_h = fig.get_figwidth(), fig.get_figheight()

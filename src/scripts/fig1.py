@@ -11,6 +11,8 @@ import os
 import paths
 from scipy.stats import gaussian_kde
 from matplotlib.gridspec import GridSpec
+import subprocess
+import matplotlib.font_manager as font_manager
 
 # Try to use science plots style if available
 try:
@@ -19,13 +21,42 @@ try:
     print("Using scienceplots style for publication quality")
 except ImportError:
     print("scienceplots not available, using default matplotlib style")
-    
-# Configure matplotlib for single-column A4 publication
-plt.rcParams.update({
-    'axes.labelsize': 9,
-    'xtick.labelsize': 8,
-    'ytick.labelsize': 8,
-})
+
+font_loc1 = "/usr/local/texlive/2022/texmf-dist/fonts/opentype/public/tex-gyre"
+print(f'loading TeX Gyre fonts from "{font_loc1}"')
+font_dirs = [font_loc1]
+font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+for font_file in font_files:
+    font_manager.fontManager.addfont(font_file)
+
+plt.rcParams['font.family'] = 'TeX Gyre Termes'
+plt.rcParams["mathtext.fontset"] = "stix"
+
+# MNRAS style configuration
+# Column width: 240pt = 10/3 inches for single column
+SMALL_SIZE = 7
+MEDIUM_SIZE = 8
+BIGGER_SIZE = 8
+
+plt.rcParams['text.usetex'] = False  # Disable LaTeX to avoid rendering issues
+
+plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
+# Try to use Nimbus Roman font (MNRAS standard)
+# try:
+#     plt.rc('font', family='Nimbus Roman')
+#    print("Using Nimbus Roman font (MNRAS standard)")
+# except:
+#    plt.rc('font', family='serif')
+#    print("Nimbus Roman not available, using default serif font")
+
+plt.rcParams["errorbar.capsize"] = 2
 
 # Constants
 AU = 1.496e13  # cm to AU conversion
@@ -115,8 +146,8 @@ def create_mstar_lx_corner_plot(data_list, output_file='mstar_lx_corner.png'):
     print(f"M_star range = {mstar_values.min():.2f} - {mstar_values.max():.2f} M_sun")
     print(f"L_x range = {lx_values.min():.2f} - {lx_values.max():.2f} x 10^30 erg/s")
     
-    # Create figure optimized for single-column A4 layout (3.5" wide)
-    fig = plt.figure(figsize=(3.35, 3.2))
+    # Create figure optimized for MNRAS single-column (10/3 inches wide)
+    fig = plt.figure(figsize=(10/3, 3.2))
     
     # Create gridspec: main plot takes most space, margins for KDEs
     gs = GridSpec(3, 3, figure=fig,
@@ -214,7 +245,7 @@ def create_mstar_lx_corner_plot(data_list, output_file='mstar_lx_corner.png'):
     # Statistical labels removed for cleaner publication appearance
     
     # Save the figure
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    plt.savefig(output_file, dpi=400, bbox_inches='tight')
     print(f"Stellar mass vs X-ray luminosity corner plot saved as: {output_file}")
     plt.close(fig)
     
@@ -246,8 +277,8 @@ def create_corner_plot(data_list, output_file='corner_plot.png'):
     print(f"m0 range = {mdisk_values.min():.2f} - {mdisk_values.max():.2f} "
           f"M_earth")
     
-    # Create figure optimized for single-column A4 layout (3.5" wide)
-    fig = plt.figure(figsize=(3.35, 3.2))
+    # Create figure optimized for MNRAS single-column (10/3 inches wide)
+    fig = plt.figure(figsize=(10/3, 3.2))
     
     # Create gridspec: main plot takes most space, margins for KDEs
     gs = GridSpec(3, 3, figure=fig,
@@ -381,8 +412,8 @@ def create_combined_corner_plot(data_list,
     print(f"Stellar mass vs X-ray luminosity: N = {len(mstar_values)}")
     print(f"Critical radius vs disc mass: N = {len(r1_values)}")
     
-    # Create figure optimized for two horizontal panels (7" wide x 3.2" tall)
-    fig = plt.figure(figsize=(6.7, 3.2))
+    # Create figure optimized for MNRAS two-column (20/3 inches wide)
+    fig = plt.figure(figsize=(20/3, 3.2))
     
     # Create gridspec for two corner plots side by side
     # Each corner plot has 3x3 subgrid

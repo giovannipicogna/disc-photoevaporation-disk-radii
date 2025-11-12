@@ -30,6 +30,9 @@ import paths
 from matplotlib.colors import LogNorm
 from scipy.stats import gaussian_kde
 from lib import load_data
+import os
+import subprocess
+import matplotlib.font_manager as font_manager
 
 # ============================================================================
 # PLOTTING CONFIGURATION
@@ -47,21 +50,56 @@ except ImportError:
 
 sns.set_palette("pastel")            # Set seaborn color palette
 
-# Set font sizes optimized for two-column A4 layout
-plt.rc('font', size=8.)
-plt.rc('xtick', labelsize=7.)
-plt.rc('ytick', labelsize=7.)
-plt.rc('axes', labelsize=8.)
-plt.rc('legend', fontsize=6.)
+kpse_cp = subprocess.run(['kpsewhich', '-var-value', 'TEXMFDIST'], capture_output=True, check=True)
+font_loc1 = os.path.join(kpse_cp.stdout.decode('utf8').strip(), 'fonts', 'opentype', 'public', 'tex-gyre')
+print(f'loading TeX Gyre fonts from "{font_loc1}"')
+font_dirs = [font_loc1]
+font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+for font_file in font_files:
+    font_manager.fontManager.addfont(font_file)
 
-# Configure errorbar appearance
+plt.rcParams['font.family'] = 'TeX Gyre Termes'
+plt.rcParams["mathtext.fontset"] = "stix"
+
+# MNRAS style configuration
+# Column width: 240pt = 10/3 inches for single column
+SMALL_SIZE = 7
+MEDIUM_SIZE = 8
+BIGGER_SIZE = 8
+
+plt.rcParams['text.usetex'] = False  # Disable LaTeX to avoid rendering issues
+
+plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
+# Try to use Nimbus Roman font (MNRAS standard)
+# try:
+#     plt.rc('font', family='Nimbus Roman')
+#    print("Using Nimbus Roman font (MNRAS standard)")
+# except:
+#    plt.rc('font', family='serif')
+#    print("Nimbus Roman not available, using default serif font")
+
 plt.rcParams["errorbar.capsize"] = 2
+
+# Override specific parameters for MNRAS single-column figure
+plt.rcParams.update({
+    'figure.figsize': [20./3., 5.0],  # MNRAS single column width
+    'savefig.dpi': 400,
+    'savefig.bbox': 'tight',
+    'savefig.pad_inches': 0.05
+})
 
 # ============================================================================
 # FIGURE SETUP AND LAYOUT
 # ============================================================================
-# Create main figure optimized for A4 two-column layout
-fig = plt.figure(figsize=(6.5, 5))
+# Create main figure optimized for MNRAS two-column layout (20/3 inches wide)
+fig = plt.figure(figsize=(20/3, 5))
 
 # Create sophisticated gridspec layout:
 # - Column 0: Dedicated colorbar (width_ratio=0.15, smaller for compact layout)
@@ -458,7 +496,7 @@ ax_kde_age.set_xlim(0., 20.)
 # Set the same evenly spaced x-ticks as Panel a and b
 ax_kde_age.set_xticks(x_ticks)
 ax_kde_age.set_xticklabels(x_tick_labels)
-ax_kde_age.legend(loc='upper right', fontsize=6)
+ax_kde_age.legend(loc='upper right')
 # Remove grid from KDE age plot
 
 # Plot accretion rate KDE differences to the right of the right plot (rotated)
@@ -476,18 +514,18 @@ ax_kde_mdot.yaxis.set_label_position("right")
 ax_kde_mdot.yaxis.tick_right()
 # Set y-limits to match the shared log scale
 ax_kde_mdot.set_ylim(1e-13, 1e-6)
-ax_kde_mdot.legend(loc='upper left', fontsize=6)
+ax_kde_mdot.legend(loc='upper left')
 ax_kde_mdot.grid(True, alpha=0.3)
 
 # Add subplot indices only for main panels
-ax_main[0].text(0.98, 0.98, 'a)', transform=ax_main[0].transAxes, fontsize=10,
+ax_main[0].text(0.98, 0.98, 'a)', transform=ax_main[0].transAxes,
                 fontweight='bold', va='top', ha='right')
-ax_main[1].text(0.98, 0.98, 'b)', transform=ax_main[1].transAxes, fontsize=10,
+ax_main[1].text(0.98, 0.98, 'b)', transform=ax_main[1].transAxes,
                 fontweight='bold', va='top', ha='right')
 # KDE plots are supporting plots - no panel labels needed
 
 # Save figure
-fig.savefig(paths.figures / 'Fig5.png', format='png', dpi=400, bbox_inches='tight')
+fig.savefig(paths.figures / 'Fig5.png', format='png', bbox_inches='tight')
 print("Figure saved as: Fig5.png")
 
 # Print summary statistics for each region
@@ -510,8 +548,8 @@ print(f"Age distribution difference integral: "
 print(f"Mdot KDE difference integral: "
       f"{np.trapz(np.abs(kde_xeuv_vals - kde_euv_vals), log_mdot_eval):.4f}")
 
-print("\nPublication-quality Figure 6 generated successfully!")
-print("Output: Fig6_boxplot_kde.png (400 DPI)")
+print("\nPublication-quality Figure 5 generated successfully!")
+print("Output: Fig5.png (EPS format)")
 print(f"Total observational sources: {len(acc_data)}")
 print(f"Star-forming regions analyzed: {len(box_data)}")
 

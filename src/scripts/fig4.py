@@ -24,6 +24,9 @@ import seaborn as sns
 import paths
 from scipy.optimize import curve_fit
 from lib import load_data
+import os
+import subprocess
+import matplotlib.font_manager as font_manager
 
 # ============================================================================
 # PLOTTING CONFIGURATION
@@ -41,21 +44,56 @@ except ImportError:
 
 sns.set_palette("pastel")  # Set seaborn color palette
 
-# Set font sizes optimized for single-column A4 layout
-plt.rc('font', size=9.)
-plt.rc('xtick', labelsize=8.)
-plt.rc('ytick', labelsize=8.)
-plt.rc('axes', labelsize=9.)
-plt.rc('legend', fontsize=8.)
+kpse_cp = subprocess.run(['kpsewhich', '-var-value', 'TEXMFDIST'], capture_output=True, check=True)
+font_loc1 = os.path.join(kpse_cp.stdout.decode('utf8').strip(), 'fonts', 'opentype', 'public', 'tex-gyre')
+print(f'loading TeX Gyre fonts from "{font_loc1}"')
+font_dirs = [font_loc1]
+font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+for font_file in font_files:
+    font_manager.fontManager.addfont(font_file)
 
-# Configure errorbar appearance
+plt.rcParams['font.family'] = 'TeX Gyre Termes'
+plt.rcParams["mathtext.fontset"] = "stix"
+
+# MNRAS style configuration
+# Column width: 240pt = 10/3 inches for single column
+SMALL_SIZE = 7
+MEDIUM_SIZE = 8
+BIGGER_SIZE = 8
+
+plt.rcParams['text.usetex'] = False  # Disable LaTeX to avoid rendering issues
+
+plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
+# Try to use Nimbus Roman font (MNRAS standard)
+# try:
+#     plt.rc('font', family='Nimbus Roman')
+#    print("Using Nimbus Roman font (MNRAS standard)")
+# except:
+#    plt.rc('font', family='serif')
+#    print("Nimbus Roman not available, using default serif font")
+
 plt.rcParams["errorbar.capsize"] = 2
+
+# Override specific parameters for MNRAS single-column figure
+plt.rcParams.update({
+    'figure.figsize': [10/3, 2.25],  # MNRAS single column width
+    'savefig.dpi': 400,
+    'savefig.bbox': 'tight',
+    'savefig.pad_inches': 0.05
+})
 
 # ============================================================================
 # FIGURE SETUP AND DATA LOADING
 # ============================================================================
-# Create figure optimized for single-column A4 layout (3.5" x 2.8")
-fig, ax = plt.subplots(1, 1, figsize=(3.46457, 2.2))  # 1 column A4 width
+# Create figure optimized for MNRAS single-column (10/3 inches wide)
+fig, ax = plt.subplots(1, 1, figsize=(10/3, 2.25))
 fig.subplots_adjust(left=0.16, bottom=0.18, right=0.96, top=0.94)
 
 # Define data paths
@@ -290,14 +328,14 @@ print("Finalizing plot...")
 
 # Configure legend and axis limits for publication quality
 # Move legend back to upper right with clean styling
-ax.legend(loc='upper right', fontsize=8, frameon=True, fancybox=False,
+ax.legend(loc='upper right', frameon=True, fancybox=False,
           shadow=False, framealpha=0.95, edgecolor='gray')
 ax.set_xlim(0., 20.)
 ax.set_ylim(0, 90.)
 
 # Set axis labels with proper formatting
-ax.set_ylabel(r'Disk fraction [$\%$]', fontsize=10)
-ax.set_xlabel('Age [Myr]', fontsize=10)
+ax.set_ylabel(r'Disk fraction [$\%$]')
+ax.set_xlabel('Age [Myr]')
 
 # Improve tick formatting for publication
 ax.tick_params(axis='both', which='major', labelsize=10, width=1.2)
@@ -306,7 +344,7 @@ ax.grid(True, alpha=0.3, linestyle='-', linewidth=0.5)
 
 # Save figure with high resolution for publication
 output_filename = paths.figures / 'Fig4.png'
-fig.savefig(output_filename, format='png', dpi=400, bbox_inches='tight',
+fig.savefig(output_filename, format='png', bbox_inches='tight',
             facecolor='white', edgecolor='none')
 
 print(f"Figure saved as {output_filename}")
