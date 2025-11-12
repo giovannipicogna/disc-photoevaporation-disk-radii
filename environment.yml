@@ -1,5 +1,6 @@
 channels:
   - conda-forge
+channel_priority: flexible
 dependencies:
   - numpy
   - pip
