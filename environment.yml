@@ -8,3 +8,4 @@ dependencies:
   - astropy
   - seaborn
   - scienceplots
+channel_priority: strict
