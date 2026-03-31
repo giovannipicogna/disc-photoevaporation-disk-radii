@@ -2,14 +2,16 @@
 Publication-ready script to generate disc fraction vs age comparison figure.
 
 This script creates a figure comparing population synthesis predictions with
-observational data from Pfalzner et al. 2022 and Michel et al. 2021, showing 
-disc fraction evolution over time for different photoevaporation prescriptions.
-The observational data is from a distance-limited sample of star-forming regions
-within 200 pc, providing a statistically robust reference for model comparison.
+observational data from selected star-forming regions, showing disc fraction 
+evolution over time for different photoevaporation prescriptions. The observational 
+data combines low-UV (Michel et al. 2021, Pfalzner et al. 2022) regions.
+
+Selected regions (from Manara et al. PPVII catalog): Lupus, Upper Scorpius, 
+Chameleon I, ρ Ophiuchi, Chameleon II, Taurus, Corona Australis
 
 Author: Giovanni Picogna
 Date: 10.05.2023
-Last Updated: March 2026 - Using distance-limited sample (d < 200 pc)
+Last Updated: March 2026 - Using Manara et al. star-forming regions
 """
 
 # ============================================================================
@@ -103,6 +105,7 @@ data_path_internal = paths.data / "pop_spreading/"
 data_path_internal_external = paths.data / "pop_spreading_extern/"
 data_path_reduced_internal = paths.data / "pop_spreading_reduced/"
 data_path_reduced_internal_external = paths.data / "pop_spreading_reduced_extern/"
+data_path_norcrit = paths.data / "pop_spreading_reduced_norcrit/"
 
 # Data filtering parameters
 mask = True           # Apply masking to population synthesis data
@@ -114,7 +117,7 @@ mask_val = 1.e-13     # Threshold for disc mass masking
 print("Loading population synthesis data...")
 
 # Load and plot internal photoevaporation data
-profile_internal = "Internal Photoevaporation"
+profile_internal = "Internal"
 print(f"Loading internal photoevaporation data from: {data_path_internal}")
 try:
     data_internal = load_data(data_path_internal, profile_name=profile_internal,
@@ -133,28 +136,8 @@ except Exception as e:
     ax.plot(dummy_ages, dummy_fractions, '.',
             color='#000000', markersize=2, label=profile_internal + " (dummy)")
 
-# Load and plot reduced PE compact discs data
-profile_internal_external = "Internal + External Photoevaporation"
-print(f"Loading internal + external photoevaporation data from: {data_path_internal_external}")
-try:
-    data_internal_external = load_data(data_path_internal_external, profile_name=profile_internal_external,
-                         mask=mask, mask_val=mask_val)
-    n_points_internal_external = len(data_internal_external['age'])
-    print(f"Successfully loaded {n_points_internal_external} data points (internal + external)")
-    
-    ax.plot(data_internal_external["age"], data_internal_external["disk_fraction"], '.',
-            color='#009E73', markersize=2, label=profile_internal_external)
-    
-except Exception as e:
-    print(f"Error loading internal + external photoevaporation data: {e}")
-    # Create dummy data if loading fails
-    dummy_ages = np.linspace(0.1, 15, 50)
-    dummy_fractions = 100 * np.exp(-dummy_ages/3.0)
-    ax.plot(dummy_ages, dummy_fractions, '.',
-            color='#009E73', markersize=2, label=profile_internal_external + " (dummy)")
-
 # Load and plot extended discs data
-profile_reduced_internal = "Reduced Internal Photoevaporation"
+profile_reduced_internal = "Reduced Internal"
 print(f"Loading reduced internal photoevaporation data from: {data_path_reduced_internal}")
 try:
     data_reduced_internal = load_data(data_path_reduced_internal, profile_name=profile_reduced_internal,
@@ -174,7 +157,7 @@ except Exception as e:
             color='#56B4E9', markersize=2, label=profile_reduced_internal + " (dummy)")
 
 # Load and plot extended discs data (reduced PE)
-profile_reduced_internal_external = "Reduced Internal + External Photoevaporation"
+profile_reduced_internal_external = "Reduced Internal + External"
 print(f"Loading reduced internal + external photoevaporation data from: {data_path_reduced_internal_external}")
 try:
     data_reduced_internal_external = load_data(data_path_reduced_internal_external, profile_name=profile_reduced_internal_external,
@@ -193,32 +176,80 @@ except Exception as e:
     ax.plot(dummy_ages, dummy_fractions, '.',
             color='#CC79A7', markersize=2, label=profile_reduced_internal_external + " (dummy)")
 
+# Load and plot no critical radius data
+profile_norcrit = "Reduced internal without r_1"
+print(f"Loading no critical radius photoevaporation data from: {data_path_norcrit}")
+try:
+    data_norcrit = load_data(data_path_norcrit, profile_name=profile_norcrit,
+                         mask=mask, mask_val=mask_val)
+    n_points_norcrit = len(data_norcrit['age'])
+    print(f"Successfully loaded {n_points_norcrit} data points (no critical radius)")
+    
+    ax.plot(data_norcrit["age"], data_norcrit["disk_fraction"], '.',
+            color='#E69F00', markersize=2, label=profile_norcrit)
+    
+except Exception as e:
+    print(f"Error loading no critical radius photoevaporation data: {e}")
+    # Create dummy data if loading fails
+    dummy_ages = np.linspace(0.1, 12, 50)
+    dummy_fractions = 100 * np.exp(-dummy_ages/2.5)
+    ax.plot(dummy_ages, dummy_fractions, '.',
+            color='#E69F00', markersize=2, label=profile_norcrit + " (dummy)")
+
 # ============================================================================
 # OBSERVATIONAL DATA OVERLAY
 # ============================================================================
 print("Loading observational data...")
 
-# Load distance-limited sample (Pfalzner+2022 and Michel+2021)
-# These are 15 star-forming regions within 200 pc, providing a statistically robust sample
-obs_file = paths.data / "disc_fraction_Pfalzner2022_Michel2021.csv"
-print(f"Loading observational data (d < 200 pc) from: {obs_file}")
+# Load combined observational data from low-UV and high-UV datasets
+# These provide comprehensive disc fraction measurements for selected regions
+obs_file_low_uv = paths.data / "disc_fraction_low_UV.csv"
+obs_file_high_uv = paths.data / "disc_fraction_high_UV.csv"
 
-# Load SFR names separately
-sfr_names = np.loadtxt(obs_file, delimiter=',', skiprows=1,
-                       usecols=(0,), dtype=str)
+# Specific regions to include (from Manara et al. PPVII catalog)
+selected_regions = [
+    'Lupus', 'Upp Sco', 'Cham I', 'Ophiuchus', 'Cham II', 'Taurus', 'CrA'
+]
 
-# Load numerical data
-data_obs = np.loadtxt(obs_file, delimiter=',', skiprows=1,
-                      usecols=(1, 2, 3, 4, 5, 6), dtype=float)
-print(f"Loaded {len(data_obs)} observational data points")
+print(f"Loading low-UV observational data from: {obs_file_low_uv}")
+print(f"Loading high-UV observational data from: {obs_file_high_uv}")
 
-# Extract data columns
-age_obs = data_obs[:, 0]
-age_lower_obs = data_obs[:, 1]
-age_upper_obs = data_obs[:, 2]
-frac_obs = data_obs[:, 3]
-frac_lower_obs = data_obs[:, 4]
-frac_upper_obs = data_obs[:, 5]
+# Read both datasets
+data_low_uv = []
+with open(obs_file_low_uv, 'r') as f:
+    for line in f:
+        if line.startswith('#'):
+            continue
+        parts = line.strip().split(',')
+        if len(parts) >= 7:
+            name = parts[0]
+            if name in selected_regions:
+                data_low_uv.append(parts[:7])  # Include name and first 6 numerical columns
+
+data_high_uv = []
+with open(obs_file_high_uv, 'r') as f:
+    for line in f:
+        if line.startswith('#'):
+            continue
+        parts = line.strip().split(',')
+        if len(parts) >= 7:
+            name = parts[0]
+            if name in selected_regions:
+                data_high_uv.append(parts[:7])  # Include name and first 6 numerical columns
+
+# Combine datasets
+all_obs_data = data_low_uv + data_high_uv
+
+print(f"Selected {len(all_obs_data)} regions: {[d[0] for d in all_obs_data]}")
+
+# Convert to arrays
+sfr_names = np.array([d[0] for d in all_obs_data])
+age_obs = np.array([float(d[1]) for d in all_obs_data])
+age_lower_obs = np.array([float(d[2]) for d in all_obs_data])
+age_upper_obs = np.array([float(d[3]) for d in all_obs_data])
+frac_obs = np.array([float(d[4]) for d in all_obs_data])
+frac_lower_obs = np.array([float(d[5]) for d in all_obs_data])
+frac_upper_obs = np.array([float(d[6]) for d in all_obs_data])
 
 # Calculate error bars
 xerr_lower_obs = age_obs - age_lower_obs
@@ -233,14 +264,7 @@ ax.errorbar(age_obs, frac_obs,
             fmt='o', markersize=4, color='#D55E00', ecolor='darkred',
             markeredgewidth=0.5, markeredgecolor='darkred', elinewidth=1.5,
             capsize=2, capthick=1, alpha=0.8, zorder=3,
-            label='Observations (d < 200 pc)')
-
-# Add SFR name labels to each data point (only within plot limits)
-for i, (age, frac, name) in enumerate(zip(age_obs, frac_obs, sfr_names)):
-    # Only label points within the plot limits (x: 0-20, y: 0-90)
-    if 0 <= age <= 20 and 0 <= frac <= 90:
-        ax.text(age, frac, f'  {name}', fontsize=5, va='center', ha='left',
-                color='darkred', alpha=0.8)
+            label='Manara et al. regions')
 
 mean_age_obs = np.mean(age_obs)
 
@@ -267,6 +291,12 @@ def predict_with_uncertainty(t, popt, pcov, n_samples=1000):
     """
     # Sample parameters from multivariate normal distribution
     param_samples = np.random.multivariate_normal(popt, pcov, n_samples)
+    
+    # Clip parameters to physical bounds to prevent unphysical behavior
+    # f0 must be in [0, 100]% and tau must be positive
+    param_samples[:, 0] = np.clip(param_samples[:, 0], 0, 100)  # f0 bounds
+    param_samples[:, 1] = np.clip(param_samples[:, 1], 0.1, 50)  # tau > 0 (min 0.1 Myr)
+    
     predictions = np.array([exp_decay(t, *params) for params in param_samples])
     
     # Calculate percentiles (68% confidence = 1-sigma)
@@ -280,7 +310,7 @@ def predict_with_uncertainty(t, popt, pcov, n_samples=1000):
 # ----------------------------------------------------------------------------
 # OBSERVATIONAL DATA EXPONENTIAL FIT
 # ----------------------------------------------------------------------------
-# Sort data by age for fitting
+# Sort observational data by age for fitting
 sort_indices_obs = np.argsort(age_obs)
 age_sorted_obs = age_obs[sort_indices_obs]
 frac_sorted_obs = frac_obs[sort_indices_obs]
@@ -329,6 +359,81 @@ except Exception as e:
     tau_estimate = mean_age_obs
     print(f"Using mean age as e-folding time estimate: {tau_estimate:.2f} Myr")
 
+# ----------------------------------------------------------------------------
+# MAMAJEK 2009 OBSERVATIONAL DATA FIT
+# ----------------------------------------------------------------------------
+print("\nLoading Mamajek et al. 2009 observational data...")
+obs_file_mamajek = paths.data / "disc_fraction_Mamajek2009.csv"
+
+# Read Mamajek 2009 dataset (all star-forming regions)
+mamajek_data = []
+with open(obs_file_mamajek, 'r') as f:
+    for line in f:
+        if line.startswith('#'):
+            continue
+        parts = line.strip().split(',')
+        if len(parts) >= 7:
+            mamajek_data.append(parts[:7])  # Include name and first 6 numerical columns
+
+print(f"Loaded {len(mamajek_data)} regions from Mamajek et al. 2009")
+
+# Convert to arrays
+mamajek_names = np.array([d[0] for d in mamajek_data])
+age_mamajek = np.array([float(d[1]) for d in mamajek_data])
+age_lower_mamajek = np.array([float(d[2]) for d in mamajek_data])
+age_upper_mamajek = np.array([float(d[3]) for d in mamajek_data])
+frac_mamajek = np.array([float(d[4]) for d in mamajek_data])
+frac_lower_mamajek = np.array([float(d[5]) for d in mamajek_data])
+frac_upper_mamajek = np.array([float(d[6]) for d in mamajek_data])
+
+# Sort Mamajek data by age for fitting
+sort_indices_mamajek = np.argsort(age_mamajek)
+age_sorted_mamajek = age_mamajek[sort_indices_mamajek]
+frac_sorted_mamajek = frac_mamajek[sort_indices_mamajek]
+
+# Fit exponential decay to Mamajek data (FREE f0 and tau)
+try:
+    mean_age_mamajek = np.mean(age_mamajek)
+    initial_guess_mamajek = [80.0, mean_age_mamajek]
+    
+    # Perform curve fitting
+    popt_mamajek, pcov_mamajek = curve_fit(exp_decay, age_sorted_mamajek, frac_sorted_mamajek,
+                                            p0=initial_guess_mamajek,
+                                            bounds=([0, 0], [100, 50]),
+                                            maxfev=5000)
+    
+    f0_fit_mamajek = popt_mamajek[0]
+    tau_fit_mamajek = popt_mamajek[1]
+    errors_mamajek = np.sqrt(np.diag(pcov_mamajek))
+    f0_error_mamajek = errors_mamajek[0]
+    tau_error_mamajek = errors_mamajek[1]
+    
+    # Calculate median disk lifetime
+    t_median_mamajek = tau_fit_mamajek * np.log(2)
+    t_median_error_mamajek = tau_error_mamajek * np.log(2)
+    
+    print(f"Mamajek et al. 2009 fit: f0 = {f0_fit_mamajek:.1f} ± {f0_error_mamajek:.1f}%, τ = {tau_fit_mamajek:.2f} ± {tau_error_mamajek:.2f} Myr")
+    print(f"Mamajek et al. 2009 median disk lifetime: {t_median_mamajek:.2f} ± {t_median_error_mamajek:.2f} Myr")
+    
+    # Generate prediction with confidence bands
+    age_fit_mamajek = np.linspace(0.1, 20, 100)
+    frac_fit_mamajek, frac_lower_mamajek_fit, frac_upper_mamajek_fit = predict_with_uncertainty(
+        age_fit_mamajek, popt_mamajek, pcov_mamajek)
+    
+    # Plot fitted curve with shaded confidence region (lighter color)
+    ax.plot(age_fit_mamajek, frac_fit_mamajek, ':', color='#009E73', linewidth=2, 
+            label='Mamajek et al. 2009 fit')
+    ax.fill_between(age_fit_mamajek, frac_lower_mamajek_fit, frac_upper_mamajek_fit, 
+                    color='#009E73', alpha=0.15, linewidth=0)
+    
+    # Add vertical line at median disk lifetime with uncertainty band
+    ax.axvspan(t_median_mamajek - t_median_error_mamajek, t_median_mamajek + t_median_error_mamajek, 
+               color='#009E73', alpha=0.1, linewidth=0, zorder=0)
+    ax.vlines(t_median_mamajek, 0, 90, color='#009E73', ls=':', alpha=0.5, linewidth=1.5)
+    
+except Exception as e:
+    print(f"Warning: Could not fit exponential decay to Mamajek data: {e}")
+
 # ============================================================================
 # E-FOLDING TIME CALCULATION FOR POPULATION SYNTHESIS DATA
 # ============================================================================
@@ -373,57 +478,13 @@ try:
             print(f"Internal prescription median disk lifetime: {t_median_new:.2f} ± {t_median_error_new:.2f} Myr")
             
             # Add solid line for median disk lifetime
-            ax.vlines(t_median_new, 0, 90, color='#000000', ls='-', alpha=0.9, linewidth=2.0)
+            ax.vlines(t_median_new, 0, 90, color='#000000', ls='-.', alpha=0.9, linewidth=2.0)
             
         else:
             print("New prescription: Not enough valid bins for fitting")
 
 except Exception as e:
     print(f"Warning: Could not calculate e-folding time for new prescription: {e}")
-
-# Calculate e-folding time for new prescription (critical radius dependence)
-try:
-    if 'data_internal_external' in locals():
-        # Create binned data for fitting (reduce computational load)
-        age_bins = np.linspace(0.1, 15, 50)
-        bin_centers = (age_bins[1:] + age_bins[:-1]) / 2
-        bin_fractions = []
-        
-        for i in range(len(age_bins)-1):
-            mask_bin = ((data_internal_external["age"] >= age_bins[i]) & 
-                       (data_internal_external["age"] < age_bins[i+1]))
-            if np.sum(mask_bin) > 0:
-                bin_fractions.append(np.mean(data_internal_external["disk_fraction"][mask_bin]))
-            else:
-                bin_fractions.append(0)
-        
-        bin_fractions = np.array(bin_fractions)
-        valid_bins = bin_fractions > 0
-        
-        if np.sum(valid_bins) > 5:  # Need enough points for fitting
-            # Fit exponential decay
-            initial_guess = [100, 3.0]  # Initial guess for e-folding time
-            popt_new, pcov_new = curve_fit(exp_decay, bin_centers[valid_bins], 
-                                          bin_fractions[valid_bins],
-                                          p0=initial_guess, maxfev=2000)
-            
-            f0_reduced, tau_reduced = popt_new
-            tau_reduced_error = np.sqrt(np.diag(pcov_new))[1]
-            
-            # Calculate median disk lifetime
-            t_median_reduced = tau_reduced * np.log(2)
-            t_median_error_reduced = tau_reduced_error * np.log(2)
-            
-            print(f"Internal + External prescription e-folding time: {tau_reduced:.2f} ± {tau_reduced_error:.2f} Myr")
-            print(f"Internal + External prescription median disk lifetime: {t_median_reduced:.2f} ± {t_median_error_reduced:.2f} Myr")
-            
-            # Add dashed line for median disk lifetime
-            ax.vlines(t_median_reduced, 0, 90, color='#009E73', ls='--', alpha=0.9, linewidth=2.0)
-            
-        else:
-            print("Reduced prescription: Not enough valid bins for fitting")
-except Exception as e:
-    print(f"Warning: Could not calculate e-folding time for reduced prescription: {e}")
 
 # Calculate e-folding time for spreading discs prescription
 try:
@@ -462,7 +523,7 @@ try:
             print(f"Reduced Internal prescription median disk lifetime: {t_median_spreading:.2f} ± {t_median_error_spreading:.2f} Myr")
             
             # Add dotted line for median disk lifetime
-            ax.vlines(t_median_spreading, 0, 90, color='#56B4E9', ls=':', alpha=0.9, linewidth=2.5)
+            ax.vlines(t_median_spreading, 0, 90, color='#56B4E9', ls='-.', alpha=0.9, linewidth=2.5)
             
         else:
             print("Spreading discs: Not enough valid bins for fitting")
@@ -515,6 +576,51 @@ try:
 except Exception as e:
     print(f"Warning: Could not calculate e-folding time for spreading discs (reduced PE): {e}")
 
+# Calculate e-folding time for no critical radius prescription
+try:
+    if 'data_norcrit' in locals():
+        # Create binned data for fitting (reduce computational load)
+        age_bins = np.linspace(0.1, 10, 40)
+        bin_centers = (age_bins[1:] + age_bins[:-1]) / 2
+        bin_fractions = []
+        
+        for i in range(len(age_bins)-1):
+            mask_bin = ((data_norcrit["age"] >= age_bins[i]) & 
+                       (data_norcrit["age"] < age_bins[i+1]))
+            if np.sum(mask_bin) > 0:
+                bin_fractions.append(np.mean(data_norcrit["disk_fraction"][mask_bin]))
+            else:
+                bin_fractions.append(0)
+        
+        bin_fractions = np.array(bin_fractions)
+        valid_bins = bin_fractions > 0
+        
+        if np.sum(valid_bins) > 5:  # Need enough points for fitting
+            # Fit exponential decay
+            initial_guess = [100, 2.0]  # Initial guess for e-folding time
+            popt_norcrit, pcov_norcrit = curve_fit(exp_decay, bin_centers[valid_bins], 
+                                          bin_fractions[valid_bins],
+                                          p0=initial_guess, maxfev=2000)
+            
+            f0_norcrit, tau_norcrit = popt_norcrit
+            tau_norcrit_error = np.sqrt(np.diag(pcov_norcrit))[1]
+            
+            # Calculate median disk lifetime
+            t_median_norcrit = tau_norcrit * np.log(2)
+            t_median_error_norcrit = tau_norcrit_error * np.log(2)
+            
+            print(f"No critical radius prescription e-folding time: {tau_norcrit:.2f} ± {tau_norcrit_error:.2f} Myr")
+            print(f"No critical radius prescription median disk lifetime: {t_median_norcrit:.2f} ± {t_median_error_norcrit:.2f} Myr")
+            
+            # Add dash-dot line for median disk lifetime
+            ax.vlines(t_median_norcrit, 0, 90, color='#E69F00', ls='-.', alpha=0.9, linewidth=2.0)
+            
+        else:
+            print("No critical radius: Not enough valid bins for fitting")
+            
+except Exception as e:
+    print(f"Warning: Could not calculate e-folding time for no critical radius: {e}")
+
 # ============================================================================
 # PLOT FORMATTING AND FINALIZATION
 # ============================================================================
@@ -524,7 +630,7 @@ print("Finalizing plot...")
 # Create legend in separate axis at top
 handles, labels = ax.get_legend_handles_labels()
 ax_legend.legend(handles, labels, loc='center', ncol=2, frameon=False,
-                 columnspacing=0.8, handletextpad=0.4)
+                 columnspacing=0.6, handletextpad=0.3)
 ax_legend.axis('off')  # Hide axis decorations
 ax.set_xlim(0., 20.)
 ax.set_ylim(0, 90.)
@@ -547,3 +653,4 @@ print(f"Figure saved as {output_filename}")
 fig_w, fig_h = fig.get_figwidth(), fig.get_figheight()
 print(f"Figure dimensions: {fig_w:.1f}\" x {fig_h:.1f}\"")
 print("Optimized for single-column A4 scientific publication")
+print(f"Includes {len(sfr_names)} Manara et al. star-forming regions")

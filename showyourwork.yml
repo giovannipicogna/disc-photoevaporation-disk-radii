@@ -33,7 +33,8 @@ datasets:
 dependencies:
   src/scripts/fig1.py:
     - src/data/parameters.csv
-
+  src/scripts/fig7_compact.py:
+    - src/data/parameters.csv
   # src/scripts/my_script.py:
   #   - src/data/dataset_for_my_script.dat
   # src/tex/ms.tex:
@@ -73,7 +74,7 @@ scripts:
 # Display of the `showyourwork` stamp on first page
 stamp:
   # Show the stamp?
-  enabled: false
+  enabled: true
   # Stamp angle in degrees
   angle: -20.0
   # Stamp size in inches

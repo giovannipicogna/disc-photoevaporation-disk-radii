@@ -93,6 +93,8 @@ def collect_parameters(csv_path):
                 params['r1'] = float(row['r1'])
             if 'alpha' in df.columns:
                 params['alpha'] = float(row['alpha'])
+            if 'Habing_G0' in df.columns:
+                params['Habing_G0'] = float(row['Habing_G0'])
             
             data_list.append(params)
         
@@ -386,14 +388,23 @@ def create_corner_plot(data_list, output_file='corner_plot.png'):
 
 
 def create_combined_corner_plot(data_list,
-                                output_file='fig.png'):
-    """Create a single figure with two horizontal corner plots."""
+                                output_file='fig.png',
+                                data_list_oor=None):
+    """Create a single figure with two corner plots and a KDE distribution.
+    
+    The figure contains three panels:
+    1. Left: Corner plot of stellar mass vs X-ray luminosity
+    2. Middle: Corner plot of critical radius vs disc mass
+    3. Right: KDE distribution of external FUV field (G0)
+    """
     
     # Extract data for both plots
     mstar_values = []
     lx_values = []
     r1_values = []
     mdisk_values = []
+    g0_values = []
+    alpha_log_values = []
     
     for params in data_list:
         if 'mstar' in params and 'L_x' in params:
@@ -402,22 +413,40 @@ def create_combined_corner_plot(data_list,
         if 'r1' in params and 'm0' in params:
             r1_values.append(params['r1'])
             mdisk_values.append(params['m0'] * 1000)  # Convert to Earth masses
+        if 'Habing_G0' in params:
+            g0_values.append(params['Habing_G0'])
+        if 'alpha' in params and params['alpha'] > 0:
+            alpha_log_values.append(np.log10(params['alpha']))
     
     mstar_values = np.array(mstar_values)
     lx_values = np.array(lx_values)
     r1_values = np.array(r1_values)
     mdisk_values = np.array(mdisk_values)
+    g0_values = np.array(g0_values)
+    alpha_log_values = np.array(alpha_log_values)
+
+    # Extract out-of-range data (r1 < 1 AU or r1 > 500 AU) if provided
+    r1_oor = np.array([])
+    mdisk_oor = np.array([])
+    if data_list_oor:
+        r1_oor_list, mdisk_oor_list = [], []
+        for params in data_list_oor:
+            if 'r1' in params and 'm0' in params:
+                r1_oor_list.append(params['r1'])
+                mdisk_oor_list.append(params['m0'] * 1000)
+        r1_oor = np.array(r1_oor_list)
+        mdisk_oor = np.array(mdisk_oor_list)
     
-    print("Combined corner plot analysis:")
+    print("Figure 1 analysis:")
     print(f"Stellar mass vs X-ray luminosity: N = {len(mstar_values)}")
     print(f"Critical radius vs disc mass: N = {len(r1_values)}")
+    print(f"External FUV field (G0): N = {len(g0_values[g0_values > 0])}")
     
     # Create figure optimized for MNRAS two-column (20/3 inches wide)
-    fig = plt.figure(figsize=(20/3, 3.2))
+    fig = plt.figure(figsize=(10., 3.2))
     
-    # Create gridspec for two corner plots side by side
-    # Each corner plot has 3x3 subgrid
-    gs_main = GridSpec(1, 2, figure=fig, wspace=0.25)
+    # Create gridspec for three corner plots side by side
+    gs_main = GridSpec(1, 3, figure=fig, wspace=0.30)
     
     # Adjust margins for publication quality - more space for y-labels
     fig.subplots_adjust(left=0.12, bottom=0.15, right=0.95, top=0.90)
@@ -450,7 +479,7 @@ def create_combined_corner_plot(data_list,
     ax_left_main.set_xlabel('')
     ax_left_main.set_ylabel(r'$L_X$ [10$^{30}$ erg s$^{-1}$]')
     ax_left_main.yaxis.set_label_coords(-0.22, 0.5)
-    ax_left_main.legend(fontsize=7, loc='upper left', frameon=True)
+    ax_left_main.legend(fontsize=7, loc='lower right', frameon=True)
     ax_left_main.grid(True, alpha=0.3, linewidth=0.5)
     
     # Move x-axis to top
@@ -510,7 +539,10 @@ def create_combined_corner_plot(data_list,
     ax_right_right = fig.add_subplot(gs_right[1, 1])
     ax_right_bottom = fig.add_subplot(gs_right[2, 0])
     
-    # Right main scatter plot
+    # Right main scatter plot: out-of-range behind, in-range on top
+    if len(r1_oor) > 0:
+        ax_right_main.loglog(r1_oor, mdisk_oor, 'o', alpha=0.3, markersize=2,
+                             color='gray', markeredgewidth=0)
     ax_right_main.loglog(r1_values, mdisk_values, 'o', alpha=0.7, markersize=2,
                          color='steelblue', label='Data', markeredgewidth=0)
     
@@ -529,13 +561,19 @@ def create_combined_corner_plot(data_list,
     ax_right_main.set_xlabel('')
     ax_right_main.set_ylabel(r'M$_{d}$ [M$_\oplus$]')
     ax_right_main.yaxis.set_label_coords(-0.22, 0.5)
-    ax_right_main.legend(fontsize=7, loc='upper left', frameon=True)
+    ax_right_main.legend(fontsize=7, loc='lower right', frameon=True)
     ax_right_main.grid(True, alpha=0.3, linewidth=0.5)
     
     # Move x-axis to top
     ax_right_main.xaxis.tick_top()
     ax_right_main.xaxis.set_label_position('top')
     ax_right_main.set_xlabel(r'r$_1$ [AU]')
+
+    # Dashed vertical lines marking the considered r1 range
+    ax_right_main.axvline(1.0, color='k', linestyle='--', linewidth=0.8,
+                          alpha=0.6)
+    ax_right_main.axvline(500.0, color='k', linestyle='--', linewidth=0.8,
+                          alpha=0.6)
     
     # Right right panel: KDE of disc masses
     m0_nonzero = mdisk_values[mdisk_values > 0]
@@ -557,18 +595,31 @@ def create_combined_corner_plot(data_list,
     ax_right_right.yaxis.set_ticklabels([])
     ax_right_right.grid(True, alpha=0.3)
     
-    # Right bottom panel: KDE of critical radii
+    # Right bottom panel: KDE of critical radii (all data, split shading)
     r1_positive = r1_values[r1_values > 0]
-    if len(r1_positive) > 0:
-        log_r1 = np.log10(r1_positive)
-        kde_log_r1 = gaussian_kde(log_r1)
-        log_r1_range = np.linspace(log_r1.min(), log_r1.max(), 200)
+    r1_oor_positive = r1_oor[r1_oor > 0] if len(r1_oor) > 0 else np.array([])
+    all_r1_positive = (np.concatenate([r1_positive, r1_oor_positive])
+                       if len(r1_oor_positive) > 0 else r1_positive)
+    if len(all_r1_positive) > 0:
+        log_r1_all = np.log10(all_r1_positive)
+        kde_log_r1 = gaussian_kde(log_r1_all)
+        log_r1_range = np.linspace(log_r1_all.min(), log_r1_all.max(), 200)
         kde_log_r1_values = kde_log_r1(log_r1_range)
         r1_range = 10**log_r1_range
-        
+
+        in_range = (r1_range >= 1.0) & (r1_range <= 500.0)
         ax_right_bottom.plot(r1_range, kde_log_r1_values, 'b-', linewidth=2)
         ax_right_bottom.fill_between(r1_range, 0, kde_log_r1_values,
-                                     alpha=0.3, color='blue')
+                                     where=in_range, alpha=0.4,
+                                     color='steelblue', label='1–500 AU')
+        ax_right_bottom.fill_between(r1_range, 0, kde_log_r1_values,
+                                     where=~in_range, alpha=0.15,
+                                     color='gray', label='Outside range')
+        # Vertical dashed lines at r1 boundaries
+        ax_right_bottom.axvline(1.0, color='k', linestyle='--',
+                                linewidth=0.8, alpha=0.6)
+        ax_right_bottom.axvline(500.0, color='k', linestyle='--',
+                                linewidth=0.8, alpha=0.6)
     
     ax_right_bottom.set_xscale('log')
     ax_right_bottom.set_xlim(ax_right_main.get_xlim())
@@ -578,9 +629,49 @@ def create_combined_corner_plot(data_list,
                                 top=False, labelbottom=False)
     ax_right_bottom.grid(True, alpha=0.3)
     
+    # === THIRD PANEL: KDE of External FUV Field (G0) ===
+    ax_g0 = fig.add_subplot(gs_main[2])
+    
+    # Filter positive G0 values and convert to log10
+    g0_positive = g0_values[g0_values > 0]
+    log_g0_all = np.log10(g0_positive)
+    
+    if len(log_g0_all) > 1:
+        # Create KDE
+        kde_g0 = gaussian_kde(log_g0_all)
+        log_g0_range = np.linspace(log_g0_all.min(), log_g0_all.max(), 200)
+        kde_g0_vals = kde_g0(log_g0_range)
+        
+        # Plot KDE
+        ax_g0.plot(log_g0_range, kde_g0_vals, 'steelblue', linewidth=2)
+        ax_g0.fill_between(log_g0_range, 0, kde_g0_vals, alpha=0.4, 
+                          color='steelblue')
+        
+        # Add histogram for context
+        ax_g0.hist(log_g0_all, bins=30, density=True, alpha=0.3, 
+                   color='gray', edgecolor='black', linewidth=0.5)
+    
+    ax_g0.set_xlabel(r'$\log_{10}(G_0)$')
+    ax_g0.set_ylabel('Density')
+    ax_g0.grid(True, alpha=0.3, linewidth=0.5)
+    ax_g0.yaxis.set_label_coords(-0.15, 0.5)
+    
+    # Add statistics text
+    if len(log_g0_all) > 0:
+        median_g0 = np.median(log_g0_all)
+        mean_g0 = np.mean(log_g0_all)
+        std_g0 = np.std(log_g0_all)
+        stats_text = (f'median = {median_g0:.2f}\n'
+                     f'mean = {mean_g0:.2f}\n'
+                     f'std = {std_g0:.2f}')
+        ax_g0.text(0.97, 0.97, stats_text, transform=ax_g0.transAxes,
+                   fontsize=7, verticalalignment='top', 
+                   horizontalalignment='right',
+                   bbox=dict(boxstyle='round', facecolor='white', edgecolor='gray', alpha=0.7))
+
     # Save the figure
     plt.savefig(paths.figures / output_file, dpi=300, bbox_inches='tight')
-    print(f"Combined corner plot saved as: {output_file}")
+    print(f"Combined figure saved as: {output_file}")
     plt.close(fig)
     
     return mstar_values, lx_values, r1_values, mdisk_values
@@ -599,19 +690,30 @@ def main():
     
     # Collect all parameters from CSV file
     data_list = collect_parameters(csv_path)
-    
+
     if len(data_list) == 0:
         print("No valid parameter data found!")
         return
+
+    # Load out-of-range parameters if available
+    oor_csv_path = paths.data / "parameters_out_of_range.csv"
+    data_list_oor = []
+    if os.path.exists(oor_csv_path):
+        print(f"\nLoading out-of-range parameters from: {oor_csv_path}")
+        data_list_oor = collect_parameters(oor_csv_path)
+        print(f"Loaded {len(data_list_oor)} out-of-range data points")
+    else:
+        print(f"No out-of-range parameter file found at {oor_csv_path}")
+        print("Run ic.py to generate it.")
     
-    # Create combined corner plot
+    # Create combined figure
     print("\n" + "="*60)
-    print("CREATING COMBINED CORNER PLOT")
+    print("CREATING FIGURE 1")
     print("="*60)
     mstar_vals, lx_vals, r1_vals, m0_vals = create_combined_corner_plot(
-        data_list, 'Fig1.png')
+        data_list, 'Fig1.png', data_list_oor=data_list_oor)
     
-    print("Combined corner plot completed successfully!")
+    print("Figure 1 completed successfully!")
     print("Final statistics:")
     print(f"- M_star vs L_x data points: {len(mstar_vals)}")
     print(f"- r1 vs disc mass data points: {len(r1_vals)}")
@@ -621,7 +723,7 @@ def main():
     print(f"- Disc mass range: {m0_vals.min():.2f} - {m0_vals.max():.2f} M_earth")
     
     print("\n" + "="*60)
-    print("COMBINED CORNER PLOT COMPLETED SUCCESSFULLY!")
+    print("FIGURE 1 COMPLETED SUCCESSFULLY!")
     print("="*60)
 
 

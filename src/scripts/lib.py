@@ -33,8 +33,9 @@ def mask_accretion(data, value):
     return output
 
 
-def load_data(path, profile_name="Full sample", mask=True, mask_val=1.e-11):
+def load_data(path, profile_name="Full sample", mask=True, mask_val=1.e-11, binary_fraction=0.876):
     import pandas as pd
+     # Fraction of stars in binaries (from Duchene & Kraus 2013, ARA&A)
     Macc_arr = np.loadtxt(str(path)+"/Macc.dat")
     age_arr = np.loadtxt(str(path)+"/age.dat")
     disk_frac = np.loadtxt(str(path)+"/frac.dat")
@@ -42,7 +43,7 @@ def load_data(path, profile_name="Full sample", mask=True, mask_val=1.e-11):
     arr_stacked = np.array([age_arr/1e6, disk_frac, Macc_arr]).T
 
     age = arr_stacked[:, 0]
-    frac = arr_stacked[:, 1]*0.86
+    frac = arr_stacked[:, 1]*binary_fraction
     mdot_acc = arr_stacked[:, 2]
 
     profile = np.array([profile_name] * np.size(arr_stacked[:, 1]))

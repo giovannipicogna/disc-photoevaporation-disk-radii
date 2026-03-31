@@ -193,7 +193,7 @@ def generate_initial_parameters(n_runs):
 
 
 if __name__ == '__main__':
-    n_runs = 4096
+    n_runs = 10000
     print(f"Generating {n_runs} parameter sets using Sobol sequence...")
     params = generate_initial_parameters(n_runs)
     print(f"Successfully generated {len(params)} parameter sets")
