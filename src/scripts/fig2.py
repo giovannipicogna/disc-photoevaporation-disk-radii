@@ -228,14 +228,6 @@ for idx, (directory, label, xl, rcrit) in enumerate(zip(directories, labels, xli
     # Store plot object for colorbar (use last one)
     plot_obj = plot
     
-    # Add contours for column density
-    # vals = [5.e20, 5.e21]
-    #circle = plt.Circle((0, 0), ((grid_temp['r'][0,fin]*u.cm).to(u.au)).value, 
-    #                    color='k', ls='dashed', fill=False, linewidth=1.5)
-    #ax.add_patch(circle)
-    # contours1 = ax.contour(X_AU, Z_AU, column_density_avg, vals, 
-    #                        linestyles='dashed', colors='red', linewidths=1.5)
-    
     # Add contour for gravitationally unbound region
     unbound_contour = ax.contour(X_AU, Z_AU, unbound_mask.astype(float), 
                                  levels=[0.5], linestyles='dashed', 

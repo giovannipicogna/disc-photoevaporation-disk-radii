@@ -25,20 +25,25 @@ dag:
 
 # Externally-hosted datasets, e.g. on Zenodo
 datasets:
-  # 10.5281/zenodo.6468327:
-  #   contents:
-  #     TOI640b.json: src/data/TOI640b.json
+  10.5072/zenodo.385111:
+    contents:
+      pop_spock.tar.gz: src/data/pop_spock.tar.gz
+      single_spock.tar.gz: src/data/single_spock.tar.gz
 
 # Custom file dependencies
 dependencies:
   src/scripts/fig1.py:
     - src/data/parameters.csv
+  src/scripts/fig2.py:
+    - src/data/pluto.tar.gz
+  src/scripts/fig4.py:
+    - src/data/single_spock.tar.gz
+  src/scripts/fig5_mamajek.py:
+    - src/data/pop_spock.tar.gz
+  src/scripts/fig6.py:
+    - src/data/pop_spock.tar.gz
   src/scripts/fig7_compact.py:
-    - src/data/parameters.csv
-  # src/scripts/my_script.py:
-  #   - src/data/dataset_for_my_script.dat
-  # src/tex/ms.tex:
-  #   - src/tex/stylesheet.tex
+    - src/data/pop_spock.tar.gz
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
 ms_name: ms
