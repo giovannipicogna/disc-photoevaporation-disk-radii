@@ -1,0 +1,17 @@
+#name,age (Myr),age lower,age upper,disc fraction (%),disc fraction lower,disc fraction upper,FUV (G0),source
+Alessi 30,30,25,35,4.9,0.9,8.9,<10,Pfalzner2022
+UCL/LLC,17.5,15,20,9,8,10,<20,Pfalzner2022/Luhman2022
+32 Ori,17.5,15,20,7,4,10,<50,Pfalzner2022
+Upp Sco,11,10,12,20,18,22,43,Michel2021/Luhman2022
+Lupus-off cloud,11,10,12,21,15,27,<20,Michel2021
+η Cha,11,8,14,30,16,44,<20,Michel2021
+TW Hya,10,7,13,27,18,36,<20,Michel2021
+Lupus-on cloud,6,5,7,63,59,67,<20,Michel2021
+CrA,5,4,6,25,21,29,<50,Michel2021
+epsilon Cha,5,3,8,30,21,39,<20,Michel2021
+Lupus,2.9,2.6,3.1,52,46,58,<20,Michel2021
+Cham I,2.0,1.7,2.4,60,42,78,6-20,Michel2021/Galli2021
+Cham II,2.0,1.7,2.3,66,59,73,12-18,Michel2021/Galli2021
+Taurus,1.5,1,2,49,45,53,<20,Michel2021
+Ophiuchus,1.5,1,2,62,57,67,<50,Michel2021
+IC 348,2.5,2,3,40,35,45,<100,Michel2021

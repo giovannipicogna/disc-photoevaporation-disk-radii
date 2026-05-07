@@ -1,0 +1,15 @@
+# High-UV environment disk fractions (FUV > 200 G0)
+# Note: Michel et al. 2021 deliberately EXCLUDED these high-UV regions from their analysis
+# σ Ori, λ Ori, and Ori OB1b updated with comprehensive spectroscopic/Spitzer censuses (Ansdell 2017, Hernández 2010, Briceño 2019)
+# Other regions use Mamajek 2009 data as they have not been re-measured with complete censuses
+# These regions contain O/B stars and experience strong external photoevaporation
+# Disk fractions are primarily M-dominated (K5-M, ~0.1-1 Msun) appropriate for comparison with population synthesis
+#name,age (Myr),age lower,age upper,disc fraction (%),disc fraction lower,disc fraction upper,FUV (G0),source
+25 Ori,8.5,7.0,10.0,6,3,9,>300,Mamajek2009
+γ Vel,5.0,3.5,6.5,7,3,11,>200,Mamajek2009
+λ Ori,5.0,4.0,6.0,18.5,14.5,22.5,>300,Hernández2010
+Ori OB1b,5.0,4.7,5.2,12,10,15,>200,Briceño2019
+σ Ori,4.0,3.0,5.0,38,35,41,>1000,Ansdell2017
+NGC 2362,5.0,2.5,6.5,13,10,18,>300,Mamajek2009
+NGC 7160,11.9,8.3,15.3,3,0,6,>300,Mamajek2009
+Orion Nebula Cluster,1.5,0.5,3.0,53,48,58,>1000,Mamajek2009

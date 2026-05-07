@@ -1,0 +1,16 @@
+#name,age (Myr),age lower,age upper,disc fraction (%),disc fraction lower,disc fraction upper
+Alessi 30,30,25,35,4.9,0.9,8.9
+UCL/LLC,17.5,15,20,9,8,10
+32 Ori,17.5,15,20,7,4,10
+Upp Sco,11,10,12,20,18,22
+Lupus-off cloud,11,10,12,21,15,27
+η Cha,11,8,14,30,16,44
+TW Hya,10,7,13,27,18,36
+Lupus-on cloud,6,5,7,63,59,67
+CrA,5,4,6,25,21,29
+epsilon Cha,5,3,8,30,21,39
+Lupus,2.9,2.6,3.1,52,46,58
+Cham I,2.0,1.7,2.4,60,42,78
+Cham II,2.0,1.7,2.3,66,59,73
+Taurus,1.5,1,2,49,45,53
+Ophiuchus,1.5,1,2,62,57,67

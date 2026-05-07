@@ -1,0 +1,27 @@
+### D. Fedele et al.: Accretion Timescale in PMS stars
+### Table 2. Adopted age, spectral type range, f accand f IRAC (when available) in Figs. 3 and 4.
+
+# Cluster, Age [Myr], Sp.T range, f_acc [%], delta_f_acc [%], f_IRAC [%], Age ref., f_acc ref., f_IRAC ref.
+rho Oph,1,K0–M4,50,16,,M05,M05,
+Taurus,1.5,K0–M4,59,9,62,M05,M05,Ha05
+NGC 2068/71,2,K1–M5,61,9,70,FM08,FM08,FM08
+Cha I,2,K0–M4,44,8,52,Lu08,M05,Lu08
+IC348,2.5,K0–M4,33,6,47,L06,M05,L06
+NGC 6231,3,K0–M3,15,5,,S07,this work,
+σ Ori,3,K4–M5,30,17,35,C08,this work,He07
+Upper Sco,5,K0–M4,7,2,19,C06,M05,C06
+NGC 2362,5,K1–M4,5,5,19,D07,D07,D07
+NGC 6531,7.5,K4–M4,8,5,,P01,this work,
+η Cha,8,K4–M4,27,19,50,S09,JA06,S09
+TWA,8,K3–M5,6,6,,D06,JA06,
+NGC 2169,9,K5–M6,0,3,,JE07,JE07,
+25 Ori,10,K2–M5,6,2,,B07,B07,
+NGC 7160,10,K0–M1,2,2,4,SA06,SA05,SA06
+ASCC 58,10,K0–M5,0,5,,K05,this work,
+β Pic,12,K6–M4,0,13,,ZS04,JA06,
+NGC 2353,12,K0–M4,0,6,,K05,this work,
+Collinder 65,25,K0–M5,0,7,,K05,this work,
+Tuc-Hor,27,K1–M3,0,8,,ZS04,JA06,
+NGC 6664,46,K0–M1,0,4,,S82,this work,
+### References. Schmidt (1982, S82), Park et al. (2001, P01), Hartmann et al. (2005,Ha05), Kharchenko et al. (2005, K05), Mohanty et al. (2005, M05), Sicilia-Aguilar et al. (2005, SA05), Carpenter et al. (2006, C06), Lada et al. (2006, L06), Jayawardhana et al. (2006, JA06), Sicilia-Aguilar et al. (2006, SA06), Dahm & Hillenbrand (2007, D07), Briceño et al. (2007, B07), Jeffries et al. (2007, JE07), Hernández et al. (2007, He07), Sana et al. (2007, S07), Caballero (2008, C08), Flaherty & Muzerolle (2008, FM08 , Luhman et al. (2008, L08), Sicilia-Aguilar et al. (2009, S09), Zuckerman & Song (2004, ZS04).
+
