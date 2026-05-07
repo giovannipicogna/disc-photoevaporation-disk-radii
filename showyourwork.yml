@@ -25,8 +25,9 @@ dag:
 
 # Externally-hosted datasets, e.g. on Zenodo
 datasets:
-  10.5072/zenodo.385111:
+  10.5281/zenodo.20071852:
     contents:
+      pluto.tar.gz: src/data/pluto.tar.gz
       pop_spock.tar.gz: src/data/pop_spock.tar.gz
       single_spock.tar.gz: src/data/single_spock.tar.gz
 
@@ -35,15 +36,15 @@ dependencies:
   src/scripts/fig1.py:
     - src/data/parameters.csv
   src/scripts/fig2.py:
-    - src/data/pluto.tar.gz
+    - src/data/PLUTO_runs
   src/scripts/fig4.py:
-    - src/data/single_spock.tar.gz
+    - src/data/single_internal_5au
   src/scripts/fig5_mamajek.py:
-    - src/data/pop_spock.tar.gz
+    - src/data/pop_compact
   src/scripts/fig6.py:
-    - src/data/pop_spock.tar.gz
+    - src/data/pop_compact
   src/scripts/fig7_compact.py:
-    - src/data/pop_spock.tar.gz
+    - src/data/pop_compact
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
 ms_name: ms
