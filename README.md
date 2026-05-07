@@ -1,7 +1,4 @@
 <p align="center">
-<a href="https://github.com/showyourwork/showyourwork">
-<img width = "450" src="https://raw.githubusercontent.com/showyourwork/.github/main/images/showyourwork.png" alt="showyourwork"/>
-</a>
 <a href="https://academic.oup.com/mnras">
 <img width = "450" src="https://oup.silverchair-cdn.com/data/SiteBuilderAssets/Live/Images/mnras/mnras_title424221717.svg" alt="mnras"/>
 </a>

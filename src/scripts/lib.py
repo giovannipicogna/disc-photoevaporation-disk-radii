@@ -38,9 +38,9 @@ def load_data(path, profile_name="Full sample", mask=True, mask_val=1.e-11, bina
      # Fraction of stars in binaries (from Duchene & Kraus 2013, ARA&A)
     Macc_arr = np.loadtxt(str(path)+"/Macc.dat")
     age_arr = np.loadtxt(str(path)+"/age.dat")
-    disk_frac = np.loadtxt(str(path)+"/frac.dat")
+    disc_frac = np.loadtxt(str(path)+"/frac.dat")
 
-    arr_stacked = np.array([age_arr/1e6, disk_frac, Macc_arr]).T
+    arr_stacked = np.array([age_arr/1e6, disc_frac, Macc_arr]).T
 
     age = arr_stacked[:, 0]
     frac = arr_stacked[:, 1]*binary_fraction
@@ -51,7 +51,7 @@ def load_data(path, profile_name="Full sample", mask=True, mask_val=1.e-11, bina
     data = pd.DataFrame(
         {
             "mdot_acc": mdot_acc,
-            "disk_fraction": frac,
+            "disc_fraction": frac,
             "age": age,
             "profile": profile
         }

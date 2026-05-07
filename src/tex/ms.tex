@@ -69,13 +69,13 @@ $^{3}$Max-Planck-Institut fu\"{u}r Extraterrestrische Physik, Giessenbachstraße
 % Don't change these lines
 \begin{document}
 
-\label{firstpage}
 \pagerange{\pageref{firstpage}--\pageref{lastpage}}
 \maketitle
+\label{firstpage}
 
 % Abstract of the paper
 \begin{abstract}
-Compact protoplanetary discs are becoming increasingly prominent in observations. Their dispersal pathways may differ substantially from those of extended discs. We aim to quantify the role of the disc outer radius in internal photoevaporation, provide a simple scaling relation for compact discs, and test whether the resulting evolutionary tracks reproduce the observed inside-out clearing of young stellar populations. We performed radiation-hydrodynamic simulations of X-ray-driven photoevaporation for discs with different outer radii, and derived the dependence of the total mass-loss rate on the cut-off radius. We find that the surface mass-loss profiles are nearly independent of disc size, but their integrated wind rates are reduced according to the cumulative mass-loss rate distribution. We incorporated this scaling into disc population synthesis models. \new{When the internal photoevaporation is applied only up to the cut-off radius} compact discs evolve via inside-out clearing consistent with observational diagnostics, \new{while when the cut-off radius is not considered, the disc spreading is hindered and the disc dispersal proceeds from the outside-in}. \new{The introduction of mild external photoevaporation present in nearby star forming regions cannot prevent the disc spreading when the cut-off radius prescription is included, but it can much better explain the evolution of disc radii as a function of time}. Disc dispersal prescriptions must include the dependence on disc \new{cut-off} radius to capture the evolution of compact discs. The proposed scaling provides a simple, physically motivated correction that better predicts the growing observational evidence for compact discs and inside-out dispersal.
+Compact protoplanetary discs are becoming increasingly prominent in observations. Their dispersal pathways may differ substantially from those of extended discs. We aim to quantify the role of the disc outer radius in internal photoevaporation, provide a simple scaling relation for compact discs, and test whether the resulting evolutionary tracks reproduce the observed inside-out clearing of young stellar populations. We performed radiation-hydrodynamic simulations of X-ray-driven photoevaporation for discs with different outer radii, and derived the dependence of the total mass-loss rate on the cut-off radius. We find that the surface mass-loss profiles are nearly independent of disc size, but their integrated wind rates are reduced according to the cumulative mass-loss rate distribution. We incorporated this scaling into disc population synthesis models. When the internal photoevaporation is applied only up to the cut-off radius compact discs evolve via inside-out clearing consistent with observational diagnostics, while when the cut-off radius is not considered, the disc spreading is hindered and the disc dispersal proceeds from the outside-in. The introduction of mild external photoevaporation present in nearby star forming regions cannot prevent the disc spreading when the cut-off radius prescription is included, but it can much better explain the evolution of disc radii as a function of time. Disc dispersal prescriptions must include the dependence on disc cut-off radius to capture the evolution of compact discs. The proposed scaling provides a simple, physically motivated correction that better predicts the growing observational evidence for compact discs and inside-out dispersal.
 \end{abstract}
 
 % Select between one and six entries from the list of approved keywords.
@@ -98,16 +98,16 @@ accretion, accretion discs -- protoplanetary discs -- circumstellar matter -- st
  \begin{equation}
     R_g = \frac{GM_\star}{c_s^2}\,.
  \end{equation} 
- \new{One can get a better estimate of the gravitational radius by considering the Bernoulli parameter (see eq.~\ref{eq:Bernoulli}) leading to \citep[for a full derivation see][]{2003PASA...20..337L}:}
+ One can get a better estimate of the gravitational radius by considering the Bernoulli parameter (see eq.~\ref{eq:Bernoulli}) leading to \citep[for a full derivation see][]{2003PASA...20..337L}:
  \begin{equation}
    R_g = \frac{\gamma-1}{2\gamma} \frac{GM_\star \mu m_H}{k_B T}\,.
  \end{equation}
- \new{If the gas is fully ionized, one can assume a temperature of $T = 10^4$ K for a pure EUV wind \citep{2012MNRAS.422.1880O}, with adiabatic index $\gamma=5/3$, and mean molecular weigth $\mu = 0.61$ leading to a gravitational radius of $1.31$ au for a solar mass star. However, recent studies have pointed towards more cool molecular winds \citep[see e.g.][]{2024A&A...690A.296S}, where the temperature at the base of the flow is non-uniform and lower than $10^4$ K, leading to a larger gravitational radius. For example, assuming a temperature of $T = 5000$ K, with adiabatic index $\gamma=7/5$, and mean molecular weigth $\mu = 2.35$, one gets $R_g = 7.22$ au. In order not to keep this as an additional free parameter, we adopt a value of $R_g = 5$ au as a representative scale for the gravitational radius of a solar mass star in the rest of this work.}
+ If the gas is fully ionized, one can assume a temperature of $T = 10^4$ K for a pure EUV wind \citep{2012MNRAS.422.1880O}, with adiabatic index $\gamma=5/3$, and mean molecular weigth $\mu = 0.61$ leading to a gravitational radius of $1.31$ au for a solar mass star. However, recent studies have pointed towards more cool molecular winds \citep[see e.g.][]{2024A&A...690A.296S}, where the temperature at the base of the flow is non-uniform and lower than $10^4$ K, leading to a larger gravitational radius. For example, assuming a temperature of $T = 5000$ K, with adiabatic index $\gamma=7/5$, and mean molecular weigth $\mu = 2.35$, one gets $R_g = 7.22$ au. In order not to keep this as an additional free parameter, we adopt a value of $R_g = 5$ au as a representative scale for the gravitational radius of a solar mass star in the rest of this work.
  
  Yet compact discs, with outer radii comparable to or smaller than this scale, are increasingly recognised as common.
  ALMA surveys show that a substantial fraction of discs are indeed very compact \citep[e.g.][]{Trapman_2025}, with radii much smaller than typically assumed even at an evolved stage. 
- Such compact configurations may result from internal evolution (mass and angular momentum loss via winds\new{, or a close companion}) or from external influences such as stellar fly-bys or external photoevaporation. 
- \new{In particular, external photoevaporation (even at a moderate level) can shrink considerably the discs on a short timescale ($< 1$ Myr), until an equilibrium is reached between the viscous spreading and the external photoevaporation \citep{2020MNRAS.492.1279S, 2026arXiv260222050P}. After that the disc radius does not evolve significantly for the rest of the disc life-time.}
+ Such compact configurations may result from internal evolution (mass and angular momentum loss via winds, or a close companion) or from external influences such as stellar fly-bys or external photoevaporation. 
+ In particular, external photoevaporation (even at a moderate level) can shrink considerably the discs on a short timescale ($< 1$ Myr), until an equilibrium is reached between the viscous spreading and the external photoevaporation \citep{2020MNRAS.492.1279S, 2026arXiv260222050P}. After that the disc radius does not evolve significantly for the rest of the disc life-time.
 
  In this paper, we investigate the dispersal of compact discs by explicitly accounting for their finite outer radii in photoevaporation models.
  Using radiation-hydrodynamic simulations, we derive the dependence of the total wind mass-loss rate on the cut-off radius and implement this scaling into one-dimensional viscous evolution and population synthesis models of compact discs.
@@ -135,7 +135,7 @@ We explored $4$ different initial cut-off radii for the circumstellar disc: $10$
 We adopted a spherical coordinate system centred on the star.
 The computational grid is logarithmically spaced in the radial direction with $1024$ cells, ensuring enhanced resolution in the innermost disc regions where photoevaporation is most effective, while still extending to large radii ($R_\mathrm{out} = 300\,\mathrm{au}$ for the more compact discs and $R_\mathrm{out} = 1,000\,\mathrm{au}$ for the remaing) without excessive computational cost. In the polar direction, the grid is linearly spaced with $256$ cells between \SI{0.01}{rad} and $\pi/2$.
 Outflow boundary conditions were applied both at the inner and outer radial boundaries, while reflecting boundary conditions were used along the disc midplane and special axisymmetric boundary condition at the polar axis (for more information see \citet{2007ApJS..170..228M}).
-The systems were evolved for $\sim 500$ orbits at \SI{10}{au}, \new{adopting an $\alpha = 0.001$}.
+The systems were evolved for $\sim 500$ orbits at \SI{10}{au}, adopting an $\alpha = 0.001$.
 A quasi-steady state is typically reached after a few hundred orbital periods, at which point the cumulative mass-loss rate and the gas streamlines in the wind stabilise.
 
 \subsection{Disc population synthesis}
@@ -144,7 +144,7 @@ In order to model the long-term evolution of compact protoplanetary discs, we ad
 \begin{equation}\label{eq:visc}
 \frac{\partial\Sigma}{\partial t} = \frac{1}{R} \frac{\partial}{\partial R} \left[ 3R^{1/2} \frac{\partial}{\partial R} \left( \nu\Sigma R^{1/2} \right)\right] - \dot{\Sigma}_{\mathrm{w_{in}}}(R, t) - \dot{\Sigma}_{\mathrm{w_{out}}}(R, t)\,,
 \end{equation}
-where the first term \new{on the right-hand side} describes the disc viscous evolution \citep{1974MNRAS.168..603L}, the \new{second} term the mass loss due to photoevaporation derived from our hydrodynamical models \citep{2021MNRAS.508.3611P}, \new{and the last term the mass loss due to external photoevaporation \citep{2023MNRAS.526.4315H}}.
+where the first term on the right-hand side describes the disc viscous evolution \citep{1974MNRAS.168..603L}, the second term the mass loss due to photoevaporation derived from our hydrodynamical models \citep{2021MNRAS.508.3611P}, and the last term the mass loss due to external photoevaporation \citep{2023MNRAS.526.4315H}.
 
 \subsubsection{Internal Photoevaporation prescription}
 The mass-loss rate due to internal photoevaporation is given by \citep{2021MNRAS.508.3611P}
@@ -179,11 +179,11 @@ The second term is the normalized mass-loss rate dependence on the X-ray luminos
 \end{equation}
 with $a_L = -1.947\cdot 10^{17}$, $b_L = -1.572\cdot 10^{-4}$, $c_L = -0.2866$, the soft component of the X-ray luminosity is
 \begin{equation}\label{eq:lxsoft}
-    L_{X,\mathrm{soft}} = 10^{0.95 \log{(L_X / \mathrm{erg} \,\mathrm{s}^{-1})}+1.19} \,,
+    L_{X,\mathrm{soft}} = 10^{0.95 \log{(L_X / \mathrm{erg} \,\mathrm{s}^{-1})}+1.19} \ [\SI{}{erg \, s^{-1}}]\,,
 \end{equation}
 and $L_{X,\mathrm{soft, mean}}$ is the soft component for a star with total X-ray luminosity given by the observational relation between stellar mass and mean X-ray luminosity \citep{2007A&A...468..353G}
 \begin{equation} \label{eq:LxMstar}
-    \log{L_{X, \mathrm{mean}}} = 1.54 \log(M_\star / M_\odot) + 30.31 \,.
+    L_{X, \mathrm{mean}} = 10^{1.54 \log(M_\star / M_\odot) + 30.31} \ [\SI{}{erg \, s^{-1}}]\,.
 \end{equation}
 
 The third term is the mass-loss rate as a function of stellar mass (for a mean X-ray luminosity, \citet{2021MNRAS.508.3611P})
@@ -192,38 +192,38 @@ The third term is the mass-loss rate as a function of stellar mass (for a mean X
 \end{equation}
 
 The absolute values of photoevaporative mass-loss rates remain uncertain, as they depend sensitively on several poorly constrained parameters - including the gas metallicity \citep[see e.g.][who show that modest C depletions within the discs can lead to order magnitude increase in mass loss rates]{2019MNRAS.490.5596W}, the hardness and luminosity of the stellar X-ray spectrum \citep{2021MNRAS.508.1675E}, the accretion luminosity and the corresponding heating-cooling balance in the flow.
-\new{However, \citet{2024A&A...690A.296S} showed that the lack of O-H collisional cooling, missing in the previous models \citep{2012MNRAS.422.1880O, 2019MNRAS.487..691P}, were reducing by an order of magnitude the mass-loss rates, for the same parameter choice.}
+However, \citet{2024A&A...690A.296S} showed that the lack of O-H collisional cooling, missing in the previous models \citep{2012MNRAS.422.1880O, 2019MNRAS.487..691P}, were reducing by an order of magnitude the mass-loss rates, for the same parameter choice.
 Our main goal in this work is not to reassess the absolute normalisation of the rates, but rather to explore their dependence on disc outer radius and its impact on the evolutionary behaviour of compact discs.
 Nevertheless, to facilitate comparison with the most recent results in the literature \citep[e.g.][]{2024A&A...690A.296S}, we have repeated all our calculations using a mass-loss prescription scaled by a factor of 10 with respect to \citet{2019MNRAS.487..691P}.
 This choice follows the current convention adopted in population synthesis and evolutionary models to better fit observational data. We emphasize, however, that such a uniform scaling may not fully capture the effects of chemistry and metallicity, which also modify the radial profile of the mass-loss rate \citep{2019MNRAS.490.5596W,2024A&A...690A.296S}.
-\new{Throughout the paper, we consider the discs to be dispersed when the maximum surface density drops below $\Sigma_\mathrm{min} = 10^{-2}$ g/cm$^2$. This condition should mock a sensitivity limit for the detection of gas in discs.}
+Throughout the paper, we consider the discs to be dispersed when the maximum surface density drops below $\Sigma_\mathrm{min} = 10^{-2}$ g/cm$^2$. This condition should mock a sensitivity limit for the detection of gas in discs.
 
 \subsubsection{External Photoevaporation prescription}
 
-\new{We implemented external photoevaporation by far-ultraviolet (FUV) radiation from nearby OB stars using version 2 of the \textsc{fried} grid \citep{2018MNRAS.481..452H, 2023MNRAS.526.4315H}.
+We implemented external photoevaporation by far-ultraviolet (FUV) radiation from nearby OB stars using version 2 of the \textsc{fried} grid \citep{2018MNRAS.481..452H, 2023MNRAS.526.4315H}.
 This grid tabulates the total FUV-driven disc mass-loss rate $\dot{M}_\mathrm{FUV}$ as a function of stellar mass $M_\star$, disc outer radius $R_\mathrm{disc}$, surface density at 1~au $\Sigma_{1\,\mathrm{au}}$, and FUV field strength $G_0$.
 Because photoelectric emission from polyciclic aromatic hydrocarbons (PAHs) constitutes the primary heating mechanism within the photodissocation region (PDR), the assumed PAH abundance is a critical parameter for these rates \citep{2016MNRAS.457.3593F}.
 Curiosly, PAHs are commonly observed in discs around massive Herbig stars but remain elusive in T-Tauri discs \citep[e.g.][]{2017ApJ...835..291S, 2006A&A...459..545G, 2007A&A...466..229V}.
 This lack of detection likely stems from three possible factors: (1) PAH destruction driven by strong X-ray emission from T-Tauri stars \citep{2010A&A...511A...6S}; (2) the loss of infrared signatures due to chemical processing into complex organics; or (3) insufficient sensitivity and wavelength coverage in current observational facilities.
-Lacking direct observational constraints for our specific targets, we adopt an ISM-like PAH-to-dust abundance ratio of unity as our fiducial baseline, reflecting an ISM-like PAH population that scales with ISM-like dust.}
+Lacking direct observational constraints for our specific targets, we adopt an ISM-like PAH-to-dust abundance ratio of unity as our fiducial baseline, reflecting an ISM-like PAH population that scales with ISM-like dust.
 
-\new{First we select the closest stellar mass grid point (which are $0.1, 0.3, 0.6, 1.0, 1.5$ and $3 M_\odot$) to our target star, since it wouldn't be physically consistent to interpolate between different stellar masses as the disc properties in the radiative transfer calculations were also changed accordingly \citep[for more details, see][]{2023MNRAS.526.4315H}.}
-\new{Then, at each timestep, we compute the per-cell mass-loss rate following the prescription of \citet{2020MNRAS.492.1279S, 2024A&A...681A..84G}.
+First we select the closest stellar mass grid point (which are $0.1, 0.3, 0.6, 1.0, 1.5$ and $3 M_\odot$) to our target star, since it wouldn't be physically consistent to interpolate between different stellar masses as the disc properties in the radiative transfer calculations were also changed accordingly \citep[for more details, see][]{2023MNRAS.526.4315H}.
+Then, at each timestep, we compute the per-cell mass-loss rate following the prescription of \citet{2020MNRAS.492.1279S, 2024A&A...681A..84G}.
 For every disc annulus at radius $R$ we interpolate the \textsc{fried} grid at the local parameters $(R,\,\Sigma(R),\,G_0)$ using a three-dimensional regular-grid interpolator in $(\log R,\,\log\Sigma_{1\,\mathrm{au}},\,\log G_0)$ space.
 Here, $\Sigma(R)$ is the local surface density at radius $R$ assuming a power-law profile with index $-1$.
-This approach allows us to continuously sample the FUV mass-loss rate as a function of radius, avoiding discrete binning onto the \textsc{fried} $G_0$ nodes.}
+This approach allows us to continuously sample the FUV mass-loss rate as a function of radius, avoiding discrete binning onto the \textsc{fried} $G_0$ nodes.
 
-\new{The truncation radius, $R_\mathrm{trunc}$, marks the transition between the optically thick disc and the optically thin photoevaporative wind. We identify this radius as the outermost peak of the interpolated rate profile:
+The truncation radius, $R_\mathrm{trunc}$, marks the transition between the optically thick disc and the optically thin photoevaporative wind. We identify this radius as the outermost peak of the interpolated rate profile:
 \begin{equation}
     R_\mathrm{trunc} = \underset{R}{\mathrm{argmax}}\;\dot{M}_\mathrm{FUV}(R).
 \end{equation}
-The total external mass-loss rate is then defined as $\dot{M}_\mathrm{ext} = \dot{M}_\mathrm{FUV}(R_\mathrm{trunc})$.}
+The total external mass-loss rate is then defined as $\dot{M}_\mathrm{ext} = \dot{M}_\mathrm{FUV}(R_\mathrm{trunc})$.
 
-\new{Following the numerical approach of \citet{2020MNRAS.492.1279S}, this total mass-loss rate is spatially partitioned across the individual outer grid cells. Specifically, mass is removed from all cells at $R \geq R_\mathrm{trunc}$ in proportion to the local surface density. The mass-loss rate for a given outer cell $i$ is weighted by its local mass fraction within the outer disc region:
+Following the numerical approach of \citet{2020MNRAS.492.1279S}, this total mass-loss rate is spatially partitioned across the individual outer grid cells. Specifically, mass is removed from all cells at $R \geq R_\mathrm{trunc}$ in proportion to the local surface density. The mass-loss rate for a given outer cell $i$ is weighted by its local mass fraction within the outer disc region:
 \begin{equation}
   \dot{M}_{\mathrm{ext}, i} = -\dot{M}_\mathrm{ext} \frac{M_i}{M(R \geq R_\mathrm{trunc})},
 \end{equation}
-where $M_i$ is the mass in cell $i$, and $M(R \geq R_\mathrm{trunc})$ is the total disc mass beyond the truncation radius. This formulation ensures that the total integrated removal rate equals $\dot{M}_\mathrm{ext}$. Finally, for discs extending beyond the outer edge of the \textsc{fried} grid ($500$~au for version~2), material is stripped at this same total rate, allowing us to accurately handle large initial discs.}
+where $M_i$ is the mass in cell $i$, and $M(R \geq R_\mathrm{trunc})$ is the total disc mass beyond the truncation radius. This formulation ensures that the total integrated removal rate equals $\dot{M}_\mathrm{ext}$. Finally, for discs extending beyond the outer edge of the \textsc{fried} grid ($500$~au for version~2), material is stripped at this same total rate, allowing us to accurately handle large initial discs.
 
 \subsubsection{Initial conditions}
 The discs are initialized with a self-similar solution (for $\gamma = 1$):
@@ -243,22 +243,22 @@ This yields an effective initial disc fraction of $\sim 87.6 \pm 0.2 \%$, provid
 
 For the X-ray luminosities we followed the same approach outlined in \citet{2023MNRAS.526L.105E}, deriving an X-ray luminosity function in three stellar mass bins from a subsample of the Chandra Orion Ultra-deep Project \citep[COUP, cf.][]{2005ApJS..160..319G} as shown in \citet{2019ApJ...883..117K}.
 
-\new{When included, the FUV field strength $G_0$ for each synthetic disc is drawn from the empirical distribution of disc-hosting stars in nearby star-forming regions ($d < 200$~pc; Upper~Sco, Taurus, Lupus, $\rho$~Oph, Cham~I/II, CrA) measured by \citet{2025A&A...695A..74A}, using a kernel density estimate in $\log G_0$. This allow us to compare the resulting population synthesis with the high quality sample of observed stellar and disc properties by \citet{2023ASPC..534..539M}.}
+When included, the FUV field strength $G_0$ for each synthetic disc is drawn from the empirical distribution of disc-hosting stars in nearby star-forming regions ($d < 200$~pc; Upper~Sco, Taurus, Lupus, $\rho$~Oph, Cham~I/II, CrA) measured by \citet{2025A&A...695A..74A}, using a kernel density estimate in $\log G_0$. This allow us to compare the resulting population synthesis with the high quality sample of observed stellar and disc properties by \citet{2023ASPC..534..539M}.
 
 For the disc properties, we derive the disc dust mass from observational constraint in young star forming regions \citep{2016ApJ...831..125P, 2017AJ....153..240A}:
 \begin{equation}
     \log(M_\mathrm{dust} [M_\oplus]) = (1.2\pm0.2) + (1.8\pm0.4) \log(M_\star [M_\odot])
 \end{equation}
 with an associated uncertainty of $\delta = 0.9\pm0.1$.
-We then consider a standard 100 conversion factor between the dust and the gas mass, and derive the cut-off radius by inverting the observed dependence of the cut-off radius as a function of the gas mass \citep{Trapman_2025}, $M_\mathrm{gas} \propto r_1^{1.7}$. \new{We limit our initial sample to discs with cut-off radii between $1$ and $500$ au in order to be consistent with observational constraints}. Finally, the disc viscosity is the less constrained parameter, thus we linearly sampled its values between $\alpha = 10^{-4}$ and $10^{-2 }$.
+We then consider a standard 100 conversion factor between the dust and the gas mass, and derive the cut-off radius by inverting the observed dependence of the cut-off radius as a function of the gas mass \citep{Trapman_2025}, $M_\mathrm{gas} \propto r_1^{1.7}$. We limit our initial sample to discs with cut-off radii between $1$ and $500$ au in order to be consistent with observational constraints. Finally, the disc viscosity is the less constrained parameter, thus we linearly sampled its values between $\alpha = 10^{-4}$ and $10^{-2 }$.
 
-To efficiently explore the \new{9-}dimensional parameter space governing initial \new{stellar and disc properties}, we employed a Quasi-Monte Carlo (QMC) sampling strategy utilizing Sobol sequences \citep{sobol1967distribution}.
+To efficiently explore the 9-dimensional parameter space governing initial stellar and disc properties, we employed a Quasi-Monte Carlo (QMC) sampling strategy utilizing Sobol sequences \citep{sobol1967distribution}.
 Unlike standard pseudo-random Monte Carlo sampling, which exhibits $\mathcal O(N-1/2)$ convergence and often results in clustering or gaps, Sobol sequences are low-discrepancy sequences that ensure a more uniform coverage of the hypercube with a convergence rate closer to $\mathcal O(N-1)$. The generated samples were mapped from the unit hypercube to their respective physical priors. For the dust mass scatter term, we applied an inverse cumulative distribution function to convert the uniform Sobol samples into a normal distribution $N(0,\delta_{Mdust})$. This approach ensures that our synthetic population of $4096$ systems provides a statistically robust representation of the parameter space.
 The resulting parameter space sampled is shown in Fig.~\ref{fig:pop_synth_corner_plots}.
 \begin{figure*}
     \centering
     \includegraphics[width=17cm]{figures/Fig1.png}
-    \caption{Parameter space sampled in the population synthesis. On the left panel, stellar mass as a function of X-ray luminosity sampled. In the middle panel, cut-off radius as a function of disc mass sampled. \new{On the right panel, external FUV field strength $G_0$ sampled \citet{2025A&A...695A..74A}}. The observationally derived fits from \citet{2007A&A...468..353G} and \citet{Trapman_2025} are overplotted for comparison.}
+    \caption{Parameter space sampled in the population synthesis. On the left panel, stellar mass as a function of X-ray luminosity sampled. In the middle panel, cut-off radius as a function of disc mass sampled. On the right panel, external FUV field strength $G_0$ sampled \citet{2025A&A...695A..74A}. The observationally derived fits from \citet{2007A&A...468..353G} and \citet{Trapman_2025} are overplotted for comparison.}
     \script{fig1.py}
     \label{fig:pop_synth_corner_plots}
 \end{figure*}
@@ -277,7 +277,7 @@ We computed the region where the disc is gravitationally bound by computing the 
 \end{equation}
 where $\Phi$ is the gravitational potential, $P$ the gas pressure, $\rho$ the gas density, and $v$ the gas velocity, and mark it in Fig.~\ref{fig:densityandvelocity} with a dashed red line.
 The bound region extend with a long tail close to the disc midplane, but from the cut-off radius outwards the disc wind streamlines start to curve downwards, and not radially away from the star as in the extended disc case. As a result, the surface mass-loss profiles are truncated very close to the cut-off radius, as shown in Fig.~\ref{fig:mass_loss_rate_cumulative}.
-\new{Some material is recirculated outside the cut-off radius, as shown by the velocity field in Fig.~\ref{fig:densityandvelocity}. However, this effect is marginal at best. The amount of material recirculated can be estimated from the tail of the cumulative mass loss rate. Its effect might be more pronounced for cut-off radii smaller than 10 au where the cumulative mass-loss rate scales as $R^3$, but even in this case it would be on the order of $10^{-10}\, M_\odot\,\mathrm{yr}^{-1}$, enhanching only slightly the viscous expansion of the disc. If one takes into account environment effects, like external photoevaporation, this loosely bound material would be nevertheless removed from the system.}
+Some material is recirculated outside the cut-off radius, as shown by the velocity field in Fig.~\ref{fig:densityandvelocity}. However, this effect is marginal at best. The amount of material recirculated can be estimated from the tail of the cumulative mass loss rate. Its effect might be more pronounced for cut-off radii smaller than 10 au where the cumulative mass-loss rate scales as $R^3$, but even in this case it would be on the order of $10^{-10}\, M_\odot\,\mathrm{yr}^{-1}$, enhanching only slightly the viscous expansion of the disc. If one takes into account environment effects, like external photoevaporation, this loosely bound material would be nevertheless removed from the system.
 
 We computed the cumulative mass-loss rate from our hydrodynamical models, as shown in Fig.~\ref{fig:mass_loss_rate_cumulative}. The four cases exhibit very similar radial behaviours, with $\dot{M}_w(R)$ rising steeply in the inner disc and flattening towards large radii. This outcome is expected, since the incident radiation field at smaller radii is not directly affected by the details of the density distribution further out.
 The main effect of reducing the cut-off radius is to truncate the radial extent of the mass-loss distribution (equation~\ref{eq:surf2}), thereby lowering the total integrated mass-loss rate.
@@ -288,7 +288,7 @@ In Fig.~\ref{fig:mass_loss_rate_cumulative} we show also that the complex fit of
     \script{fig2.py}
     \label{fig:densityandvelocity}
 \end{figure*}
-\new{Our heating prescription based on the ionization parameter assumes that the main source of heating is direct irradiation. This assumption should hold in most of the cases, as the diffuse material close to the disc outer edge has a very low density and the resulting diffuse EUV field is negligible compared to environmental effects. Thus we don't expect an increase in the mass-loss rate outside the cut-off radius from internal photoevaporation, but we explore the effect of external photoevaporation in the population synthesis models in the next section.}
+Our heating prescription based on the ionization parameter assumes that the main source of heating is direct irradiation. This assumption should hold in most of the cases, as the diffuse material close to the disc outer edge has a very low density and the resulting diffuse EUV field is negligible compared to environmental effects. Thus we don't expect an increase in the mass-loss rate outside the cut-off radius from internal photoevaporation, but we explore the effect of external photoevaporation in the population synthesis models in the next section.
 
 We can now provide a prescription for the long-term evolution of compact discs. The normalization factor to be used is given by subtituting in equation~\ref{eq:surf2} the cut-off radius $r_1$
 \begin{equation}\label{eq:mdotnorm}
@@ -304,45 +304,45 @@ The consistency of the surface mass loss rate distribution however is reassuring
 
 \subsection{Single disc evolution}
 
-We investigated the disc long-term evolution using our 1-D viscous evolution code \textsc{spock} for discs with $r_1 = 5, 20,$ and $80$ au, $M_\mathrm{d} = 0.01\, M_\odot$, $\alpha=10^{-3}$ around a \SI{1}{M_\odot} star with $L_X = 2.29\cdot10^{30}$ erg/s, evolving the surface density according to equations~\ref{eq:visc}-\ref{eq:LxMstar} and \ref{eq:mdotnorm} \new{with a factor $10$ decrease in the internal photoevaporation rate}.
-\new{The cut-off radius is updated at each timestep.}
-In Figure~\ref{fig:photoevaporation_scenarios}, the \new{first column} shows the surface density evolution obtained adopting the \new{cut-off dependent} mass-loss prescription, while the \new{second one} displays the corresponding results using the standard, unscaled prescription.
+We investigated the disc long-term evolution using our 1-D viscous evolution code \textsc{spock} for discs with $r_1 = 5, 20,$ and $80$ au, $M_\mathrm{d} = 0.01\, M_\odot$, $\alpha=10^{-3}$ around a \SI{1}{M_\odot} star with $L_X = 2.29\cdot10^{30}$ erg/s, evolving the surface density according to equations~\ref{eq:visc}-\ref{eq:LxMstar} and \ref{eq:mdotnorm} with a factor $10$ decrease in the internal photoevaporation rate.
+The cut-off radius is updated at each timestep.
+In Figure~\ref{fig:photoevaporation_scenarios}, the first column shows the surface density evolution obtained adopting the cut-off dependent mass-loss prescription, while the second one displays the corresponding results using the standard, unscaled prescription.
 \begin{figure*}
     \includegraphics{figures/Fig4.png}
-    \caption{Surface density evolution for discs with a cut-off radius of 5 au (top row), 20 au (middle row) and 80 au (bottom row) for the \new{internal photoevaporation limited to the cut-off radius} (left column) and the \new{unconstrained internal photoevaporation prescription} (right column). The line colours indicate the different evolutionary stage as explained in the legend on top.}
+    \caption{Surface density evolution for discs with a cut-off radius of 5 au (top row), 20 au (middle row) and 80 au (bottom row) for the internal photoevaporation limited to the cut-off radius (left column) and the unconstrained internal photoevaporation prescription (right column). The line colours indicate the different evolutionary stage as explained in the legend on top.}
     \script{fig4.py}
     \label{fig:photoevaporation_scenarios}
 \end{figure*}
 The two approaches lead to strikingly different evolutionary outcomes.
-\new{For compact discs (with cut-off radius less than 20-30 au) with unconstrained internal photoevaporation, the wind mass-loss rate is stronger than the viscous spreading outside the cut-off radius.}
-\new{As a result, these discs} tend to disperse from the outside-in, gradually eroding their outer edges until the disc vanishes.
-\new{When the disc is not initially compact (bottom row) then the two prescriptions yield similar results. The disc dispers generally from the inside-out with a cavity being opened in the outer disc depending on the initial surface density profile}.
-In contrast, when the \new{cut-off} dependence is included, the compact discs evolve via inside-out dispersal, with gap opening driving the final dispersal.
+For compact discs (with cut-off radius less than 20-30 au) with unconstrained internal photoevaporation, the wind mass-loss rate is stronger than the viscous spreading outside the cut-off radius.
+As a result, these discs tend to disperse from the outside-in, gradually eroding their outer edges until the disc vanishes.
+When the disc is not initially compact (bottom row) then the two prescriptions yield similar results. The disc dispers generally from the inside-out with a cavity being opened in the outer disc depending on the initial surface density profile.
+In contrast, when the cut-off dependence is included, the compact discs evolve via inside-out dispersal, with gap opening driving the final dispersal.
 This distinction is not only physically motivated, but also observationally significant. The inside-out dispersal is consistent with the colour-colour evolution of young stellar objects (YSOs) observed in large surveys \citep{2013MNRAS.428.3327K}, which strongly disfavour outside-in clearing. The improved treatment of compact discs therefore provides a natural explanation for the observational evidence, reconciling theory and data.
-\new{For increasing external photoevaporation fields (from column 3 to 5), the disc is prevented to spread - as in the case of the unconstrained internal photoevaporation - but the disc dispersal happens still in an inside-out fashion, for the parameters explored here.}
+For increasing external photoevaporation fields (from column 3 to 5), the disc is prevented to spread - as in the case of the unconstrained internal photoevaporation - but the disc dispersal happens still in an inside-out fashion, for the parameters explored here.
 
 \subsection{Population synthesis models}
 
-We performed a population synthesis of \new{$N_{\rm disc} = 4096$} discs, with initial cut-off radii and masses drawn from the observationally derived distribution described in Section~\ref{sec:methods}.
-The resulting population naturally reproduces the observed disc fraction as a function of cluster age \citep[e.g.][]{2009AIPC.1158....3M} \new{for the reduced internal photoevaporation prescription} without the need of tuning the parameters as shown in Figure~\ref{fig:disc_fraction_age}. \new{The addition of external photoevaporation leads to a slightly faster decline of the disc fraction, but still compatible with the observations.}
-The resulting \new{median disc lifetime} is $2.70 \pm 0.13$ Myr, which is compatible with the observationally derived one ($2.24 \pm 0.35$ Myr) and considerably larger than \new{that predicted without decreasing the internal photoevaporation rate} ($1.13 \pm 0.05$ Myr).
-\new{The cut-off radius prescription has a limited effect on the overall disc lifetime, as the bulk of the disc mass is located at smaller radii where the mass-loss rates are similar in both models.}
-\new{When considering only star forming regions within $200$ pc in the \citet{2023ASPC..534..539M} sample, the observed median disc lifetime is $4.61 \pm 1.55$ Myr, which is considerably longer than what predicted by current models but more in line with the improved prescription for compact discs.}
+We performed a population synthesis of $N_{\rm disc} = 4096$ discs, with initial cut-off radii and masses drawn from the observationally derived distribution described in Section~\ref{sec:methods}.
+The resulting population naturally reproduces the observed disc fraction as a function of cluster age \citep[e.g.][]{2009AIPC.1158....3M} for the reduced internal photoevaporation prescription without the need of tuning the parameters as shown in Figure~\ref{fig:disc_fraction_age}. The addition of external photoevaporation leads to a slightly faster decline of the disc fraction, but still compatible with the observations.
+The resulting median disc lifetime is $2.70 \pm 0.13$ Myr, which is compatible with the observationally derived one ($2.24 \pm 0.35$ Myr) and considerably larger than that predicted without decreasing the internal photoevaporation rate ($1.13 \pm 0.05$ Myr).
+The cut-off radius prescription has a limited effect on the overall disc lifetime, as the bulk of the disc mass is located at smaller radii where the mass-loss rates are similar in both models.
+When considering only star forming regions within $200$ pc in the \citet{2023ASPC..534..539M} sample, the observed median disc lifetime is $4.61 \pm 1.55$ Myr, which is considerably longer than what predicted by current models but more in line with the improved prescription for compact discs.
 
 We then compared the accretion rate distributions as a function of age predicted by our population synthesis models with observational data from several stellar clusters, including Taurus, Lupus, Upper Scorpius, Chameleon I, Chameleon II, $\rho$ Ophiuchi, Corona Australis, Orionis Cloud A, Orionis Cloud B, $\gamma$ Vel, $\sigma$ Orionis, OriOB1a, OriOB1b \citep{2023ASPC..534..539M, 2022yCat..51630074T}. 
-We evaluated the predictions obtained using the \new{cut-off dependent mass-loss prescription and including or not the effect of external photoevaporation}.
-\new{As the population synthesis models with reduced internal photoevaporation (by a factor of 10) better reproduce the observed disc lifetimes, we focus the rest of our analysis on this set of models, but we keep a comparison with the standard prescription.}
-\new{Both models correctly predict the observed general evolution of the mass-accretion ratees, as} shown in Fig.~\ref{fig:mass_accretion_age}.
-\new{The effect of external photoevaporation is to reduce slightly the disc lifetime and thus the population of low-accreting systems.}
-\new{Compared to the observations, the models underpredict a population of high accreting systems which could be explained by an initial absorption of the high energetic stellar irradiation by a massive inner MHD wind \citep{2023ASPC..534..567P}.}
-\new{When comparing the reduced internal photoevaporation prescription with the standard one marked with dashed lines in the right panel, there is a slight shift of the peak towards lower accretion rates, and a lower fraction of low accreting systems, which is more in line with the observations.}
+We evaluated the predictions obtained using the cut-off dependent mass-loss prescription and including or not the effect of external photoevaporation.
+As the population synthesis models with reduced internal photoevaporation (by a factor of 10) better reproduce the observed disc lifetimes, we focus the rest of our analysis on this set of models, but we keep a comparison with the standard prescription.
+Both models correctly predict the observed general evolution of the mass-accretion rates, as shown in Fig.~\ref{fig:mass_accretion_age}.
+The effect of external photoevaporation is to reduce slightly the disc lifetime and thus the population of low-accreting systems.
+Compared to the observations, the models underpredict a population of high accreting systems which could be explained by an initial absorption of the high energetic stellar irradiation by a massive inner MHD wind \citep{2023ASPC..534..567P}.
+When comparing the reduced internal photoevaporation prescription with the standard one marked with dashed lines in the right panel, there is a slight shift of the peak towards lower accretion rates, and a lower fraction of low accreting systems, which is more in line with the observations.
 
-\new{Finally we focused on the effect of the external photoevaporation on the cut-off radius evolution for compact discs (with initial $r_1 < 30$ au), as shown in Fig.~\ref{fig:critical_radius_age}.
+Finally we focused on the effect of the external photoevaporation on the cut-off radius evolution for compact discs (with initial $r_1 < 30$ au), as shown in Fig.~\ref{fig:critical_radius_age}.
 Viscous spreading leads to a rapid increase of the cut-off radius.
 Internal photoevaporation, opening up a gap around the gravitational radius and dispersing the disc from the inside-out, hinders the disc radial expansion, as seen for a class of compact discs that keep a cut-off radius less than 5 au for more than 5 Myr.
 The addition of external photoevaporation leads generally to a more gentle increase of the cut-off radius, and to a larger fraction of compact discs.
 For larger external FUV fields, one can envision a scenario where the cut-off radius remains small for the entire disc lifetime, as viscous expansion drives the disc radii to an equilibrium radius where visous expansion and external photoevaporation cancel each other out.
-For the parameter space explored here, the bulk of the disc population still experiences an increase of the cut-off radius over time, but the fraction of compact discs is larger than in the case without external photoevaporation, as shown in the right panel comparing at later ages the distribution of the population driven by internal photoevaporation only and by internal plus external photoevaporation.}
+For the parameter space explored here, the bulk of the disc population still experiences an increase of the cut-off radius over time, but the fraction of compact discs is larger than in the case without external photoevaporation, as shown in the right panel comparing at later ages the distribution of the population driven by internal photoevaporation only and by internal plus external photoevaporation.
 %This tail is a natural outcome of the weaker dependence of the dispersal timescale on stellar and disc parameters when the cut-off radius is accounted for explicitly.
 %The reduced mass-loss rates in compact discs lead to longer lifetimes and a more gradual decline in accretion activity.
 %The resulting accretion-rate-age distribution from the compact discs aligns more closely with the observations, which consistently reveal a minority population of long-lived, highly accreting discs in older clusters. Furthermore, the peak in the accretion rate is now shifted from $10^{-9}$ to $10^{-12}$, which is below our current detection threshold \citep{2023ApJ...944...90T} but it could be an interesting observable for future campaigns. This improved agreement suggests that incorporating the radius dependence into the photoevaporation prescription captures an essential physical ingredient missing from the standard approach, namely, the coupling between disc structure and the location of the flow launching region, which regulates both the efficiency and timescale of disc dispersal.
@@ -350,7 +350,7 @@ For the parameter space explored here, the bulk of the disc population still exp
 \begin{figure}
     \begin{centering}
 	\includegraphics{figures/Fig5.png}
-	\caption{Disc fraction as a function of time for the old (gray solid line) and new cut-off radius prescription (black solid line). The observational data from \citet{2009AIPC.1158....3M} and their exponential fit are shown with red dots and a red dashed line respectively. The e-folding time is overplotted with vertical dotted lines for each model and the observations.}
+	\caption{Disc fraction as a function of time for the different models explored. For comparison, the exponential fit from \citet{2009AIPC.1158....3M} is shown with a green dashed line and the the disc fractions of the star forming regions in \citet{2023ASPC..534..539M} is shown with orange dots. The median disc lifetime is overplotted with vertical dotted lines for each model and the observations.}
         \script{fig5_mamajek.py}
 	\label{fig:disc_fraction_age}
     \end{centering}
@@ -375,18 +375,23 @@ For the parameter space explored here, the bulk of the disc population still exp
 
 We have shown that compact discs, with a cut-off radius comparable with the gravitational radius for photoevaporation, follow the same local mass-loss profile as extended discs, but their integrated wind rates are reduced according to the previously found cumulative mass-loss rate distribution, given in equations~\ref{eq:mdotnorm}, \ref{eq:mdot},  \ref{eq:mdotmstar}, \ref{eq:mdotlx}, \ref{eq:lxsoft}.
 Incorporating this scaling into viscous evolution models compact discs leads to longer disc lifetimes and inside-out dispersal, in agreement with observational constraints from colour-colour diagrams of young stellar populations.
-Population synthesis \new{taking into account the evolution of compact discs reproduces better the observed disc fractions and accretion rates as a function of time (Figures \ref{fig:disc_fraction_age}, \ref{fig:mass_accretion_age})}.
-\new{Including the effect of external photoevaporation leads to a more gentle increase of the cut-off radius for compact discs, and a shift towards smaller cut-off radii at later ages (Figure~\ref{fig:critical_radius_age}).}
+Population synthesis taking into account the evolution of compact discs reproduces better the observed disc fractions and accretion rates as a function of time (Figures \ref{fig:disc_fraction_age}, \ref{fig:mass_accretion_age}).
+Including the effect of external photoevaporation leads to a more gentle increase of the cut-off radius for compact discs, and a shift towards smaller cut-off radii at later ages (Figure~\ref{fig:critical_radius_age}).
 The dispersal of compact discs cannot be captured by standard unscaled models, and radius-dependent photoevaporation prescriptions are essential to connect disc evolution theory with observations.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section*{Acknowledgements}
 
-We acknowledge the support of the DFG (German Research Foundation), Research Unit "Transition discs" - 325594231 and of the Excellence Cluster ORIGINS - EXC-2094 - 390783311. We acknowledge support from the Max Planck Society.
+The authors would like to thank the anonymous referee for the constructive comments and valuable suggestions, which helped improve the quality of this manuscript.
+This work was supported by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) Research Unit "Transition discs" - 325594231 and of the Excellence Cluster ORIGINS - EXC-2094 - 390783311.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Data Availability}
 
-The data underlying this article will be shared on reasonable request to the corresponding author.
+\section*{Reproducibility}
+This study uses the reproducibility framework ``showyourwork''~\citep{Luger2021}.
+All code required to reproduce our results, figures, and this article itself is available at \url{https://github.com/GiovanniPicogna/disc-photoevaporation-disk-radii}.
+The code to reproduce a figure can be accessed via the icon link next to the respective figure caption.
 
 %%%%%%%%%%%%%%%%%%%% REFERENCES %%%%%%%%%%%%%%%%%%
 

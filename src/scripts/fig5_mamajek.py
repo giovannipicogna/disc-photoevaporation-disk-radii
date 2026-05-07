@@ -125,7 +125,7 @@ try:
     n_points_internal = len(data_internal['age'])
     print(f"Successfully loaded {n_points_internal} data points (internal)")
     
-    ax.plot(data_internal["age"], data_internal["disk_fraction"], '.',
+    ax.plot(data_internal["age"], data_internal["disc_fraction"], '.',
             color='#000000', markersize=2, label=profile_internal)
     
 except Exception as e:
@@ -145,7 +145,7 @@ try:
     n_points_reduced_internal = len(data_reduced_internal['age'])
     print(f"Successfully loaded {n_points_reduced_internal} data points (reduced internal)")
     
-    ax.plot(data_reduced_internal["age"], data_reduced_internal["disk_fraction"], '.',
+    ax.plot(data_reduced_internal["age"], data_reduced_internal["disc_fraction"], '.',
             color='#56B4E9', markersize=2, label=profile_reduced_internal)
     
 except Exception as e:
@@ -165,7 +165,7 @@ try:
     n_points_reduced_internal_external = len(data_reduced_internal_external['age'])
     print(f"Successfully loaded {n_points_reduced_internal_external} data points (reduced internal + external)")
     
-    ax.plot(data_reduced_internal_external["age"], data_reduced_internal_external["disk_fraction"], '.',
+    ax.plot(data_reduced_internal_external["age"], data_reduced_internal_external["disc_fraction"], '.',
             color='#CC79A7', markersize=2, label=profile_reduced_internal_external)
     
 except Exception as e:
@@ -177,7 +177,7 @@ except Exception as e:
             color='#CC79A7', markersize=2, label=profile_reduced_internal_external + " (dummy)")
 
 # Load and plot no critical radius data
-profile_norcrit = "Reduced internal without r_1"
+profile_norcrit = f"Reduced internal without $r_1$"
 print(f"Loading no critical radius photoevaporation data from: {data_path_norcrit}")
 try:
     data_norcrit = load_data(data_path_norcrit, profile_name=profile_norcrit,
@@ -185,7 +185,7 @@ try:
     n_points_norcrit = len(data_norcrit['age'])
     print(f"Successfully loaded {n_points_norcrit} data points (no critical radius)")
     
-    ax.plot(data_norcrit["age"], data_norcrit["disk_fraction"], '.',
+    ax.plot(data_norcrit["age"], data_norcrit["disc_fraction"], '.',
             color='#E69F00', markersize=2, label=profile_norcrit)
     
 except Exception as e:
@@ -273,14 +273,14 @@ mean_age_obs = np.mean(age_obs)
 # ============================================================================
 # Fit exponential decay model: f(t) = f0 * exp(-t/tau)
 # where tau is the e-folding time
-# Median disk lifetime is calculated as: t_median = tau * ln(2)
-# (when 50% of the initial disk population has dispersed)
+# Median disc lifetime is calculated as: t_median = tau * ln(2)
+# (when 50% of the initial disc population has dispersed)
 
 # Exponential decay functions
 def exp_decay(t, f0, tau):
     """Exponential decay function: f(t) = f0 * exp(-t/tau)
     Parameters:
-        f0: initial disk fraction (free parameter for observations)
+        f0: initial disc fraction (free parameter for observations)
         tau: e-folding time in Myr
     """
     return f0 * np.exp(-t / tau)
@@ -332,12 +332,12 @@ try:
     f0_error_obs = errors_obs[0]
     tau_error_obs = errors_obs[1]
     
-    # Calculate median disk lifetime (when 50% of disks have dispersed)
+    # Calculate median disc lifetime (when 50% of discs have dispersed)
     t_median_obs = tau_fit_obs * np.log(2)
     t_median_error_obs = tau_error_obs * np.log(2)
     
     print(f"Observational fit: f0 = {f0_fit_obs:.1f} ± {f0_error_obs:.1f}%, τ = {tau_fit_obs:.2f} ± {tau_error_obs:.2f} Myr")
-    print(f"Observational median disk lifetime: {t_median_obs:.2f} ± {t_median_error_obs:.2f} Myr")
+    print(f"Observational median disc lifetime: {t_median_obs:.2f} ± {t_median_error_obs:.2f} Myr")
     
     # Generate prediction with confidence bands
     age_fit = np.linspace(0.1, 20, 100)
@@ -348,7 +348,7 @@ try:
     ax.fill_between(age_fit, frac_lower_obs_fit, frac_upper_obs_fit, 
                     color='#D55E00', alpha=0.2, linewidth=0)
     
-    # Add vertical line at median disk lifetime with uncertainty band
+    # Add vertical line at median disc lifetime with uncertainty band
     ax.axvspan(t_median_obs - t_median_error_obs, t_median_obs + t_median_error_obs, 
                color='#D55E00', alpha=0.15, linewidth=0, zorder=0)
     ax.vlines(t_median_obs, 0, 90, color='#D55E00', ls=':', alpha=0.6, linewidth=1.5)
@@ -408,12 +408,12 @@ try:
     f0_error_mamajek = errors_mamajek[0]
     tau_error_mamajek = errors_mamajek[1]
     
-    # Calculate median disk lifetime
+    # Calculate median disc lifetime
     t_median_mamajek = tau_fit_mamajek * np.log(2)
     t_median_error_mamajek = tau_error_mamajek * np.log(2)
     
     print(f"Mamajek et al. 2009 fit: f0 = {f0_fit_mamajek:.1f} ± {f0_error_mamajek:.1f}%, τ = {tau_fit_mamajek:.2f} ± {tau_error_mamajek:.2f} Myr")
-    print(f"Mamajek et al. 2009 median disk lifetime: {t_median_mamajek:.2f} ± {t_median_error_mamajek:.2f} Myr")
+    print(f"Mamajek et al. 2009 median disc lifetime: {t_median_mamajek:.2f} ± {t_median_error_mamajek:.2f} Myr")
     
     # Generate prediction with confidence bands
     age_fit_mamajek = np.linspace(0.1, 20, 100)
@@ -426,7 +426,7 @@ try:
     ax.fill_between(age_fit_mamajek, frac_lower_mamajek_fit, frac_upper_mamajek_fit, 
                     color='#009E73', alpha=0.15, linewidth=0)
     
-    # Add vertical line at median disk lifetime with uncertainty band
+    # Add vertical line at median disc lifetime with uncertainty band
     ax.axvspan(t_median_mamajek - t_median_error_mamajek, t_median_mamajek + t_median_error_mamajek, 
                color='#009E73', alpha=0.1, linewidth=0, zorder=0)
     ax.vlines(t_median_mamajek, 0, 90, color='#009E73', ls=':', alpha=0.5, linewidth=1.5)
@@ -437,7 +437,7 @@ except Exception as e:
 # ============================================================================
 # E-FOLDING TIME CALCULATION FOR POPULATION SYNTHESIS DATA
 # ============================================================================
-# Calculate median disk lifetimes for all population synthesis models
+# Calculate median disc lifetimes for all population synthesis models
 # by fitting exponential decay and converting tau to t_median = tau * ln(2)
 print("Calculating e-folding times for population synthesis data...")
 
@@ -453,7 +453,7 @@ try:
             mask_bin = ((data_internal["age"] >= age_bins[i]) & 
                        (data_internal["age"] < age_bins[i+1]))
             if np.sum(mask_bin) > 0:
-                bin_fractions.append(np.mean(data_internal["disk_fraction"][mask_bin]))
+                bin_fractions.append(np.mean(data_internal["disc_fraction"][mask_bin]))
             else:
                 bin_fractions.append(0)
         
@@ -470,14 +470,14 @@ try:
             f0_new, tau_new = popt_new
             tau_new_error = np.sqrt(np.diag(pcov_new))[1]
             
-            # Calculate median disk lifetime
+            # Calculate median disc lifetime
             t_median_new = tau_new * np.log(2)
             t_median_error_new = tau_new_error * np.log(2)
             
             print(f"Internal prescription e-folding time: {tau_new:.2f} ± {tau_new_error:.2f} Myr")
-            print(f"Internal prescription median disk lifetime: {t_median_new:.2f} ± {t_median_error_new:.2f} Myr")
+            print(f"Internal prescription median disc lifetime: {t_median_new:.2f} ± {t_median_error_new:.2f} Myr")
             
-            # Add solid line for median disk lifetime
+            # Add solid line for median disc lifetime
             ax.vlines(t_median_new, 0, 90, color='#000000', ls='-.', alpha=0.9, linewidth=2.0)
             
         else:
@@ -498,7 +498,7 @@ try:
             mask_bin = ((data_reduced_internal["age"] >= age_bins[i]) & 
                        (data_reduced_internal["age"] < age_bins[i+1]))
             if np.sum(mask_bin) > 0:
-                bin_fractions.append(np.mean(data_reduced_internal["disk_fraction"][mask_bin]))
+                bin_fractions.append(np.mean(data_reduced_internal["disc_fraction"][mask_bin]))
             else:
                 bin_fractions.append(0)
         
@@ -515,14 +515,14 @@ try:
             f0_spreading, tau_spreading = popt_spreading
             tau_spreading_error = np.sqrt(np.diag(pcov_spreading))[1]
             
-            # Calculate median disk lifetime
+            # Calculate median disc lifetime
             t_median_spreading = tau_spreading * np.log(2)
             t_median_error_spreading = tau_spreading_error * np.log(2)
             
             print(f"Reduced Internal prescription e-folding time: {tau_spreading:.2f} ± {tau_spreading_error:.2f} Myr")
-            print(f"Reduced Internal prescription median disk lifetime: {t_median_spreading:.2f} ± {t_median_error_spreading:.2f} Myr")
+            print(f"Reduced Internal prescription median disc lifetime: {t_median_spreading:.2f} ± {t_median_error_spreading:.2f} Myr")
             
-            # Add dotted line for median disk lifetime
+            # Add dotted line for median disc lifetime
             ax.vlines(t_median_spreading, 0, 90, color='#56B4E9', ls='-.', alpha=0.9, linewidth=2.5)
             
         else:
@@ -543,7 +543,7 @@ try:
             mask_bin = ((data_reduced_internal_external["age"] >= age_bins[i]) & 
                        (data_reduced_internal_external["age"] < age_bins[i+1]))
             if np.sum(mask_bin) > 0:
-                bin_fractions.append(np.mean(data_reduced_internal_external["disk_fraction"][mask_bin]))
+                bin_fractions.append(np.mean(data_reduced_internal_external["disc_fraction"][mask_bin]))
             else:
                 bin_fractions.append(0)
         
@@ -560,14 +560,14 @@ try:
             f0_spreading_reduced, tau_spreading_reduced = popt_spreading_reduced
             tau_spreading_reduced_error = np.sqrt(np.diag(pcov_spreading_reduced))[1]
             
-            # Calculate median disk lifetime
+            # Calculate median disc lifetime
             t_median_spreading_reduced = tau_spreading_reduced * np.log(2)
             t_median_error_spreading_reduced = tau_spreading_reduced_error * np.log(2)
             
             print(f"Reduced Internal + External prescription e-folding time: {tau_spreading_reduced:.2f} ± {tau_spreading_reduced_error:.2f} Myr")
-            print(f"Reduced Internal + External prescription median disk lifetime: {t_median_spreading_reduced:.2f} ± {t_median_error_spreading_reduced:.2f} Myr")
+            print(f"Reduced Internal + External prescription median disc lifetime: {t_median_spreading_reduced:.2f} ± {t_median_error_spreading_reduced:.2f} Myr")
             
-            # Add dash-dot line for median disk lifetime
+            # Add dash-dot line for median disc lifetime
             ax.vlines(t_median_spreading_reduced, 0, 90, color='#CC79A7', ls='-.', alpha=0.9, linewidth=2.0)
             
         else:
@@ -588,7 +588,7 @@ try:
             mask_bin = ((data_norcrit["age"] >= age_bins[i]) & 
                        (data_norcrit["age"] < age_bins[i+1]))
             if np.sum(mask_bin) > 0:
-                bin_fractions.append(np.mean(data_norcrit["disk_fraction"][mask_bin]))
+                bin_fractions.append(np.mean(data_norcrit["disc_fraction"][mask_bin]))
             else:
                 bin_fractions.append(0)
         
@@ -605,14 +605,14 @@ try:
             f0_norcrit, tau_norcrit = popt_norcrit
             tau_norcrit_error = np.sqrt(np.diag(pcov_norcrit))[1]
             
-            # Calculate median disk lifetime
+            # Calculate median disc lifetime
             t_median_norcrit = tau_norcrit * np.log(2)
             t_median_error_norcrit = tau_norcrit_error * np.log(2)
             
             print(f"No critical radius prescription e-folding time: {tau_norcrit:.2f} ± {tau_norcrit_error:.2f} Myr")
-            print(f"No critical radius prescription median disk lifetime: {t_median_norcrit:.2f} ± {t_median_error_norcrit:.2f} Myr")
+            print(f"No critical radius prescription median disc lifetime: {t_median_norcrit:.2f} ± {t_median_error_norcrit:.2f} Myr")
             
-            # Add dash-dot line for median disk lifetime
+            # Add dash-dot line for median disc lifetime
             ax.vlines(t_median_norcrit, 0, 90, color='#E69F00', ls='-.', alpha=0.9, linewidth=2.0)
             
         else:
@@ -636,7 +636,7 @@ ax.set_xlim(0., 20.)
 ax.set_ylim(0, 90.)
 
 # Set axis labels with proper formatting
-ax.set_ylabel(r'Disk fraction [$\%$]')
+ax.set_ylabel(r'Disc fraction [$\%$]')
 ax.set_xlabel('Age [Myr]')
 
 # Improve tick formatting for publication
