@@ -42,15 +42,18 @@ except ImportError:
 AU = 1.496e13  # cm to AU conversion
 OUTPUT_TIMESTEP_YR = 10000  # Each output represents 10,000 years
 
-kpse_cp = subprocess.run(['kpsewhich', '-var-value', 'TEXMFDIST'], capture_output=True, check=True)
-font_loc1 = os.path.join(kpse_cp.stdout.decode('utf8').strip(), 'fonts', 'opentype', 'public', 'tex-gyre')
-print(f'loading TeX Gyre fonts from "{font_loc1}"')
-font_dirs = [font_loc1]
-font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
-for font_file in font_files:
-    font_manager.fontManager.addfont(font_file)
-
-plt.rcParams['font.family'] = 'TeX Gyre Termes'
+try:
+    kpse_cp = subprocess.run(['kpsewhich', '-var-value', 'TEXMFDIST'], capture_output=True, check=True)
+    font_loc1 = os.path.join(kpse_cp.stdout.decode('utf8').strip(), 'fonts', 'opentype', 'public', 'tex-gyre')
+    print(f'loading TeX Gyre fonts from "{font_loc1}"')
+    font_dirs = [font_loc1]
+    font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+    for font_file in font_files:
+        font_manager.fontManager.addfont(font_file)
+    plt.rcParams['font.family'] = 'TeX Gyre Termes'
+except (FileNotFoundError, subprocess.CalledProcessError):
+    print("kpsewhich not found; falling back to default serif font")
+    plt.rcParams['font.family'] = 'serif'
 plt.rcParams["mathtext.fontset"] = "stix"
 
 # MNRAS style configuration

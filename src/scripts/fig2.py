@@ -49,15 +49,18 @@ except ImportError:
 
 sns.set_palette("pastel")  # Set seaborn color palette
 
-kpse_cp = subprocess.run(['kpsewhich', '-var-value', 'TEXMFDIST'], capture_output=True, check=True)
-font_loc1 = os.path.join(kpse_cp.stdout.decode('utf8').strip(), 'fonts', 'opentype', 'public', 'tex-gyre')
-print(f'loading TeX Gyre fonts from "{font_loc1}"')
-font_dirs = [font_loc1]
-font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
-for font_file in font_files:
-    font_manager.fontManager.addfont(font_file)
-
-plt.rcParams['font.family'] = 'TeX Gyre Termes'
+try:
+    kpse_cp = subprocess.run(['kpsewhich', '-var-value', 'TEXMFDIST'], capture_output=True, check=True)
+    font_loc1 = os.path.join(kpse_cp.stdout.decode('utf8').strip(), 'fonts', 'opentype', 'public', 'tex-gyre')
+    print(f'loading TeX Gyre fonts from "{font_loc1}"')
+    font_dirs = [font_loc1]
+    font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+    for font_file in font_files:
+        font_manager.fontManager.addfont(font_file)
+    plt.rcParams['font.family'] = 'TeX Gyre Termes'
+except (FileNotFoundError, subprocess.CalledProcessError):
+    print("kpsewhich not found; falling back to default serif font")
+    plt.rcParams['font.family'] = 'serif'
 plt.rcParams["mathtext.fontset"] = "stix"
 
 # MNRAS style configuration
@@ -177,18 +180,10 @@ for idx, (directory, label, xl, rcrit) in enumerate(zip(directories, labels, xli
     
     # Escape velocity: v_esc = sqrt(2*G*M/r)
     v_escape = np.sqrt(2 * const.G.cgs.value * Mstar.cgs.value / r_distance)
-
-    # Strategy: Mask out the spherical outer boundary where flow artificially vanishes
-    # The boundary appears as an arc because it's a spherical shell at constant radius
     
     # Use density as primary indicator - outer boundary has very low artificial density
     density_threshold = 1e-22  # g/cm^3 - adjust based on your data
     density_mask = density_avg < density_threshold
-    
-    # Additionally detect regions where both velocity magnitude is very small
-    # This catches the boundary layer where flow is artificially damped
-    # v_threshold_high = 1e5  # 10 km/s - must have at least this velocity to be "active"
-    # velocity_mask = v_total > v_threshold_high
     
     # Combine: need sufficient density OR sufficient velocity to be physical
     # This allows the unbound region to extend far out where there's real flow
