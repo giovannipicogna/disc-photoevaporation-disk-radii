@@ -15,6 +15,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Cache Zenodo datasets
+        uses: actions/cache@v4
+        with:
+          path: |
+            src/data/pluto.tar.gz
+            src/data/pop_spock.tar.gz
+            src/data/single_spock.tar.gz
+          key: zenodo-datasets-${{ hashFiles('showyourwork.yml') }}
+
       - name: Build the article PDF
         id: build
         uses: showyourwork/showyourwork-action@main
